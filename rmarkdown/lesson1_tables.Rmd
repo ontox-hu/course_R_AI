@@ -1,0 +1,82 @@
+---
+title: "Untitled"
+output: html_document
+date: "2022-10-13"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. click the **Knit** button to generate a html-document.
+
+Any text typed in an Rmarkdown document will be just text.
+
+Code needs to be in code chunks:
+
+```{r,echo=T, message=FALSE,error=FALSE }
+library(tidyverse)
+# summarise data
+summarised_tootgrowth <- ToothGrowth |>
+  group_by(supp,dose) |> 
+  summarise(average_len=mean(len, stdev_len=sd(len))
+  )
+
+```
+
+A dataframe with data on The Effect of Vitamin C on Tooth Growth in Guinea Pigs. The data has the length of odontoblasts (teeth) in 10 guinea pigs, who were fed different doses of Vitamin C with two delivery methods (orange juice or ascorbic acid).
+
+```{r}
+summarised_tootgrowth
+```
+
+This won't look very nice in a paper though. Use knitr to generate tables in a Rmarkdown:
+
+```{r}
+knitr::kable(
+  summarised_tootgrowth,
+  caption = "Table1: this is actually a table."
+)
+```
+
+Or use packages or latex to make tables with APA format:
+
+
+```{r}
+library(flextable)
+
+summarised_tootgrowth2 <- ToothGrowth |> 
+  group_by(supp,dose) |> 
+  summarise(Mean = mean(len), 
+            SD = sd(len),
+            Min = min(len),
+            Max = max(len))
+
+ft <- summarised_tootgrowth2 |> 
+  flextable() |> 
+  separate_header() |> 
+  autofit() |> 
+  theme_booktabs(bold_header = TRUE)|>
+ footnote(i = 1, j = 2,
+  ref_symbols = "a",
+  value = as_paragraph("This is footnote one")) |>
+  align(align = "center", part = "all", j = 3:6) |> 
+  merge_v(j = 1) |> 
+  valign(j = 1, valign = "top") |> 
+  colformat_double(digits = 2) |> 
+  add_header_lines(values = "Table 1. This is a header") |> 
+  border(part = "head", i = c(1:length(table_caption)),
+         border = list("width" = 0, color = "black", style = "solid"))
+
+# |> 
+# set_caption(caption = "Table 1. header text be here ") 
+
+ft
+```
+
+
+</br>
+
+Do check out the `rticles` package [(click)](http://cran.nexr.com/web/packages/rticles/README.html) for generating papers automatically in a format specified by a journal or publisher.

@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Lesson 2 - Data types and structures in R | Intro into R, Reproducible research and machine learning</title>
+  <meta name="description" content="Lesson 2 - Data types and structures in R | Intro into R, Reproducible research and machine learning" />
+  <meta name="generator" content="bookdown 0.27 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Lesson 2 - Data types and structures in R | Intro into R, Reproducible research and machine learning" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Lesson 2 - Data types and structures in R | Intro into R, Reproducible research and machine learning" />
+  
+  
+  
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="lesson-1---introduction-to-r-and-rstudio.html"/>
+<link rel="next" href="lesson-3---importing-data-tidy-data.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="toc-logo"><a href="./"><img style="float:left;" src="images/voorbeeldlogo2.png"></a> <h4 class=".paddingtitel ">DAUR1 </h2></li>
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Introduction</a>
+<ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#course-outline"><i class="fa fa-check"></i>Course outline</a>
+<ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#course-material"><i class="fa fa-check"></i>Course material</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#lessons"><i class="fa fa-check"></i>Lessons</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#exercises"><i class="fa fa-check"></i>Exercises</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#rstudio-server"><i class="fa fa-check"></i>Rstudio server</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#learning-objectives"><i class="fa fa-check"></i>Learning objectives</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="preparation-before-the-course.html"><a href="preparation-before-the-course.html"><i class="fa fa-check"></i>Preparation before the course</a>
+<ul>
+<li class="chapter" data-level="" data-path="preparation-before-the-course.html"><a href="preparation-before-the-course.html#lets-get-started"><i class="fa fa-check"></i>Let’s get started!</a>
+<ul>
+<li class="chapter" data-level="" data-path="preparation-before-the-course.html"><a href="preparation-before-the-course.html#remarks-before-starting"><i class="fa fa-check"></i>Remarks before starting</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="preparation-before-the-course.html"><a href="preparation-before-the-course.html#updating-r-and-rstudio"><i class="fa fa-check"></i>Updating R and RStudio</a>
+<ul>
+<li class="chapter" data-level="" data-path="preparation-before-the-course.html"><a href="preparation-before-the-course.html#windows-users-1"><i class="fa fa-check"></i>Windows users</a></li>
+<li class="chapter" data-level="" data-path="preparation-before-the-course.html"><a href="preparation-before-the-course.html#mac-users-1"><i class="fa fa-check"></i>Mac users</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="preparation-before-the-course.html"><a href="preparation-before-the-course.html#installRhere"><i class="fa fa-check"></i>Install R</a>
+<ul>
+<li class="chapter" data-level="" data-path="preparation-before-the-course.html"><a href="preparation-before-the-course.html#windows"><i class="fa fa-check"></i>Windows</a></li>
+<li class="chapter" data-level="" data-path="preparation-before-the-course.html"><a href="preparation-before-the-course.html#mac"><i class="fa fa-check"></i>Mac</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="preparation-before-the-course.html"><a href="preparation-before-the-course.html#install-rstudio"><i class="fa fa-check"></i>Install RStudio</a>
+<ul>
+<li class="chapter" data-level="" data-path="preparation-before-the-course.html"><a href="preparation-before-the-course.html#install-rstudio-itself"><i class="fa fa-check"></i>Install RStudio itself</a></li>
+<li class="chapter" data-level="" data-path="preparation-before-the-course.html"><a href="preparation-before-the-course.html#installing-packages"><i class="fa fa-check"></i>Installing packages</a></li>
+<li class="chapter" data-level="" data-path="preparation-before-the-course.html"><a href="preparation-before-the-course.html#loading-packages"><i class="fa fa-check"></i>Loading packages</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="preparation-before-the-course.html"><a href="preparation-before-the-course.html#if-all-is-still-not-well"><i class="fa fa-check"></i>If all is still not well</a></li>
+<li class="chapter" data-level="" data-path="preparation-before-the-course.html"><a href="preparation-before-the-course.html#reader"><i class="fa fa-check"></i>reader</a></li>
+<li class="chapter" data-level="" data-path="preparation-before-the-course.html"><a href="preparation-before-the-course.html#introduction-to-r"><i class="fa fa-check"></i>Introduction to R</a>
+<ul>
+<li class="chapter" data-level="" data-path="preparation-before-the-course.html"><a href="preparation-before-the-course.html#variables-and-functions"><i class="fa fa-check"></i>Variables and functions</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="preparation-before-the-course.html"><a href="preparation-before-the-course.html#rstudio"><i class="fa fa-check"></i>Rstudio</a>
+<ul>
+<li class="chapter" data-level="" data-path="preparation-before-the-course.html"><a href="preparation-before-the-course.html#console"><i class="fa fa-check"></i>Console</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="preparation-before-the-course.html"><a href="preparation-before-the-course.html#projects"><i class="fa fa-check"></i>Projects</a>
+<ul>
+<li class="chapter" data-level="" data-path="preparation-before-the-course.html"><a href="preparation-before-the-course.html#starting-a-new-project-in-rstudio"><i class="fa fa-check"></i>Starting a new Project in Rstudio</a></li>
+<li class="chapter" data-level="" data-path="preparation-before-the-course.html"><a href="preparation-before-the-course.html#opening-a-project-in-rstudio"><i class="fa fa-check"></i>Opening a project in Rstudio</a></li>
+<li class="chapter" data-level="" data-path="preparation-before-the-course.html"><a href="preparation-before-the-course.html#more-help"><i class="fa fa-check"></i>More help</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="preparation-before-the-course.html"><a href="preparation-before-the-course.html#diy"><i class="fa fa-check"></i>DIY</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lesson-1---introduction-to-r-and-rstudio.html"><a href="lesson-1---introduction-to-r-and-rstudio.html"><i class="fa fa-check"></i>Lesson 1 - Introduction to R and RStudio</a>
+<ul>
+<li class="chapter" data-level="" data-path="lesson-1---introduction-to-r-and-rstudio.html"><a href="lesson-1---introduction-to-r-and-rstudio.html#learning-objectives-1"><i class="fa fa-check"></i>Learning objectives</a></li>
+<li class="chapter" data-level="" data-path="lesson-1---introduction-to-r-and-rstudio.html"><a href="lesson-1---introduction-to-r-and-rstudio.html#starting-to-work-within-a-project"><i class="fa fa-check"></i>Starting to work within a project</a>
+<ul>
+<li class="chapter" data-level="" data-path="lesson-1---introduction-to-r-and-rstudio.html"><a href="lesson-1---introduction-to-r-and-rstudio.html#running-code-in-rstudio"><i class="fa fa-check"></i>Running code in Rstudio</a></li>
+<li class="chapter" data-level="" data-path="lesson-1---introduction-to-r-and-rstudio.html"><a href="lesson-1---introduction-to-r-and-rstudio.html#variables"><i class="fa fa-check"></i>Variables</a></li>
+<li class="chapter" data-level="" data-path="lesson-1---introduction-to-r-and-rstudio.html"><a href="lesson-1---introduction-to-r-and-rstudio.html#functions"><i class="fa fa-check"></i>Functions</a></li>
+<li class="chapter" data-level="" data-path="lesson-1---introduction-to-r-and-rstudio.html"><a href="lesson-1---introduction-to-r-and-rstudio.html#packages-and-libraries"><i class="fa fa-check"></i>Packages and libraries</a></li>
+<li class="chapter" data-level="" data-path="lesson-1---introduction-to-r-and-rstudio.html"><a href="lesson-1---introduction-to-r-and-rstudio.html#the-help-function"><i class="fa fa-check"></i>The help function</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lesson-1---introduction-to-r-and-rstudio.html"><a href="lesson-1---introduction-to-r-and-rstudio.html#data-types-and-structures-in-r"><i class="fa fa-check"></i>Data types and structures in R</a></li>
+<li class="chapter" data-level="" data-path="lesson-1---introduction-to-r-and-rstudio.html"><a href="lesson-1---introduction-to-r-and-rstudio.html#indexing"><i class="fa fa-check"></i>Indexing</a></li>
+<li class="chapter" data-level="" data-path="lesson-1---introduction-to-r-and-rstudio.html"><a href="lesson-1---introduction-to-r-and-rstudio.html#missing-values"><i class="fa fa-check"></i>Missing values</a></li>
+<li class="chapter" data-level="" data-path="lesson-1---introduction-to-r-and-rstudio.html"><a href="lesson-1---introduction-to-r-and-rstudio.html#more-complicated-data"><i class="fa fa-check"></i>More complicated data</a></li>
+<li class="chapter" data-level="" data-path="lesson-1---introduction-to-r-and-rstudio.html"><a href="lesson-1---introduction-to-r-and-rstudio.html#lists"><i class="fa fa-check"></i>Lists</a>
+<ul>
+<li class="chapter" data-level="" data-path="lesson-1---introduction-to-r-and-rstudio.html"><a href="lesson-1---introduction-to-r-and-rstudio.html#selecting-list-elements"><i class="fa fa-check"></i>Selecting list elements</a></li>
+<li class="chapter" data-level="" data-path="lesson-1---introduction-to-r-and-rstudio.html"><a href="lesson-1---introduction-to-r-and-rstudio.html#headers"><i class="fa fa-check"></i>Headers</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lesson-1---introduction-to-r-and-rstudio.html"><a href="lesson-1---introduction-to-r-and-rstudio.html#dataframes"><i class="fa fa-check"></i>Dataframes</a>
+<ul>
+<li class="chapter" data-level="" data-path="lesson-1---introduction-to-r-and-rstudio.html"><a href="lesson-1---introduction-to-r-and-rstudio.html#data-analysis-using-dataframes"><i class="fa fa-check"></i>Data analysis using dataframes</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lesson-1---introduction-to-r-and-rstudio.html"><a href="lesson-1---introduction-to-r-and-rstudio.html#tibbles"><i class="fa fa-check"></i>Tibbles</a></li>
+<li class="chapter" data-level="" data-path="lesson-1---introduction-to-r-and-rstudio.html"><a href="lesson-1---introduction-to-r-and-rstudio.html#factors"><i class="fa fa-check"></i>Factors</a></li>
+<li class="chapter" data-level="" data-path="lesson-1---introduction-to-r-and-rstudio.html"><a href="lesson-1---introduction-to-r-and-rstudio.html#using-functions-drc"><i class="fa fa-check"></i>using functions: drc</a></li>
+<li class="chapter" data-level="" data-path="lesson-1---introduction-to-r-and-rstudio.html"><a href="lesson-1---introduction-to-r-and-rstudio.html#scripts-and-rmarkdown"><i class="fa fa-check"></i>scripts and Rmarkdown</a>
+<ul>
+<li class="chapter" data-level="" data-path="lesson-1---introduction-to-r-and-rstudio.html"><a href="lesson-1---introduction-to-r-and-rstudio.html#scripts"><i class="fa fa-check"></i>scripts</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lesson-1---introduction-to-r-and-rstudio.html"><a href="lesson-1---introduction-to-r-and-rstudio.html#rmarkdown"><i class="fa fa-check"></i>Rmarkdown</a></li>
+<li class="chapter" data-level="" data-path="lesson-1---introduction-to-r-and-rstudio.html"><a href="lesson-1---introduction-to-r-and-rstudio.html#bla"><i class="fa fa-check"></i>bla</a></li>
+<li class="chapter" data-level="" data-path="lesson-1---introduction-to-r-and-rstudio.html"><a href="lesson-1---introduction-to-r-and-rstudio.html#yaml-header"><i class="fa fa-check"></i>YAML header</a></li>
+<li class="chapter" data-level="" data-path="lesson-1---introduction-to-r-and-rstudio.html"><a href="lesson-1---introduction-to-r-and-rstudio.html#code-chunks"><i class="fa fa-check"></i>Code chunks</a></li>
+<li class="chapter" data-level="" data-path="lesson-1---introduction-to-r-and-rstudio.html"><a href="lesson-1---introduction-to-r-and-rstudio.html#output-control"><i class="fa fa-check"></i>Output control</a></li>
+<li class="chapter" data-level="" data-path="lesson-1---introduction-to-r-and-rstudio.html"><a href="lesson-1---introduction-to-r-and-rstudio.html#plain-text-formatting"><i class="fa fa-check"></i>Plain text formatting</a></li>
+<li class="chapter" data-level="" data-path="lesson-1---introduction-to-r-and-rstudio.html"><a href="lesson-1---introduction-to-r-and-rstudio.html#here-package"><i class="fa fa-check"></i>Here package</a></li>
+<li class="chapter" data-level="" data-path="lesson-1---introduction-to-r-and-rstudio.html"><a href="lesson-1---introduction-to-r-and-rstudio.html#creating-a-new-rmarkdown-file"><i class="fa fa-check"></i>Creating a new RMarkdown file</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lesson-2---data-types-and-structures-in-r.html"><a href="lesson-2---data-types-and-structures-in-r.html"><i class="fa fa-check"></i>Lesson 2 - Data types and structures in R</a>
+<ul>
+<li class="chapter" data-level="" data-path="lesson-2---data-types-and-structures-in-r.html"><a href="lesson-2---data-types-and-structures-in-r.html#learning-objectives-2"><i class="fa fa-check"></i>Learning objectives</a></li>
+<li class="chapter" data-level="" data-path="lesson-2---data-types-and-structures-in-r.html"><a href="lesson-2---data-types-and-structures-in-r.html#data-in-r"><i class="fa fa-check"></i>Data in R</a></li>
+<li class="chapter" data-level="" data-path="lesson-2---data-types-and-structures-in-r.html"><a href="lesson-2---data-types-and-structures-in-r.html#oefenopdracht-thuis"><i class="fa fa-check"></i>Oefenopdracht (thuis)</a></li>
+<li class="chapter" data-level="" data-path="lesson-2---data-types-and-structures-in-r.html"><a href="lesson-2---data-types-and-structures-in-r.html#overview-r-functions-first-two-lessons"><i class="fa fa-check"></i>Overview R functions first two lessons</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lesson-3---importing-data-tidy-data.html"><a href="lesson-3---importing-data-tidy-data.html"><i class="fa fa-check"></i>Lesson 3 - Importing data &amp; tidy data</a>
+<ul>
+<li class="chapter" data-level="" data-path="lesson-3---importing-data-tidy-data.html"><a href="lesson-3---importing-data-tidy-data.html#learning-objectives-3"><i class="fa fa-check"></i>Learning objectives</a></li>
+<li class="chapter" data-level="" data-path="lesson-3---importing-data-tidy-data.html"><a href="lesson-3---importing-data-tidy-data.html#importing-text-files"><i class="fa fa-check"></i>Importing text files</a>
+<ul>
+<li class="chapter" data-level="" data-path="lesson-3---importing-data-tidy-data.html"><a href="lesson-3---importing-data-tidy-data.html#separators"><i class="fa fa-check"></i>separators</a></li>
+<li class="chapter" data-level="" data-path="lesson-3---importing-data-tidy-data.html"><a href="lesson-3---importing-data-tidy-data.html#extracting-numbers"><i class="fa fa-check"></i>extracting numbers</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lesson-3---importing-data-tidy-data.html"><a href="lesson-3---importing-data-tidy-data.html#setting-variable-column-names"><i class="fa fa-check"></i>Setting variable (column) names</a></li>
+<li class="chapter" data-level="" data-path="lesson-3---importing-data-tidy-data.html"><a href="lesson-3---importing-data-tidy-data.html#importing-excel-files"><i class="fa fa-check"></i>Importing Excel files</a></li>
+<li class="chapter" data-level="" data-path="lesson-3---importing-data-tidy-data.html"><a href="lesson-3---importing-data-tidy-data.html#saving-and-importing-r_objects"><i class="fa fa-check"></i>Saving and importing R_Objects</a></li>
+<li class="chapter" data-level="" data-path="lesson-3---importing-data-tidy-data.html"><a href="lesson-3---importing-data-tidy-data.html#inspecting-your-data"><i class="fa fa-check"></i>Inspecting your data</a></li>
+<li class="chapter" data-level="" data-path="lesson-3---importing-data-tidy-data.html"><a href="lesson-3---importing-data-tidy-data.html#what-is-tidy-data"><i class="fa fa-check"></i>What is tidy data?</a></li>
+<li class="chapter" data-level="" data-path="lesson-3---importing-data-tidy-data.html"><a href="lesson-3---importing-data-tidy-data.html#making-your-data-tidy-gathering"><i class="fa fa-check"></i>Making your data tidy: gathering</a></li>
+<li class="chapter" data-level="" data-path="lesson-3---importing-data-tidy-data.html"><a href="lesson-3---importing-data-tidy-data.html#making_your_data_tidy-spreading"><i class="fa fa-check"></i>Making_your_data_tidy: spreading</a></li>
+<li class="chapter" data-level="" data-path="lesson-3---importing-data-tidy-data.html"><a href="lesson-3---importing-data-tidy-data.html#making_your_data_tidy-separate"><i class="fa fa-check"></i>Making_your_data_tidy: separate</a></li>
+<li class="chapter" data-level="" data-path="lesson-3---importing-data-tidy-data.html"><a href="lesson-3---importing-data-tidy-data.html#checking-normality"><i class="fa fa-check"></i>Checking normality</a></li>
+<li class="chapter" data-level="" data-path="lesson-3---importing-data-tidy-data.html"><a href="lesson-3---importing-data-tidy-data.html#map-functions"><i class="fa fa-check"></i>map functions</a></li>
+<li class="chapter" data-level="" data-path="lesson-3---importing-data-tidy-data.html"><a href="lesson-3---importing-data-tidy-data.html#histograms"><i class="fa fa-check"></i>Histograms</a></li>
+<li class="chapter" data-level="" data-path="lesson-3---importing-data-tidy-data.html"><a href="lesson-3---importing-data-tidy-data.html#overview-r-functions"><i class="fa fa-check"></i>Overview R functions</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lesson-4---answering-research-questions.html"><a href="lesson-4---answering-research-questions.html"><i class="fa fa-check"></i>Lesson 4 - Answering research questions</a>
+<ul>
+<li class="chapter" data-level="" data-path="lesson-4---answering-research-questions.html"><a href="lesson-4---answering-research-questions.html#learning-objectives-4"><i class="fa fa-check"></i>Learning objectives</a></li>
+<li class="chapter" data-level="" data-path="lesson-4---answering-research-questions.html"><a href="lesson-4---answering-research-questions.html#difference-questions"><i class="fa fa-check"></i>Difference Questions</a>
+<ul>
+<li class="chapter" data-level="" data-path="lesson-4---answering-research-questions.html"><a href="lesson-4---answering-research-questions.html#practice-making-bar-charts"><i class="fa fa-check"></i>Practice making bar charts</a></li>
+<li class="chapter" data-level="" data-path="lesson-4---answering-research-questions.html"><a href="lesson-4---answering-research-questions.html#two-sample-t-tests"><i class="fa fa-check"></i>Two sample t-tests</a></li>
+<li class="chapter" data-level="" data-path="lesson-4---answering-research-questions.html"><a href="lesson-4---answering-research-questions.html#unpaired-two-sample-t-test"><i class="fa fa-check"></i>Unpaired two sample t test</a></li>
+<li class="chapter" data-level="" data-path="lesson-4---answering-research-questions.html"><a href="lesson-4---answering-research-questions.html#paired-two-sample-t-test"><i class="fa fa-check"></i>Paired two sample t test</a></li>
+<li class="chapter" data-level="" data-path="lesson-4---answering-research-questions.html"><a href="lesson-4---answering-research-questions.html#plotting-significance"><i class="fa fa-check"></i>Plotting significance</a></li>
+<li class="chapter" data-level="" data-path="lesson-4---answering-research-questions.html"><a href="lesson-4---answering-research-questions.html#anova"><i class="fa fa-check"></i>ANOVA</a></li>
+<li class="chapter" data-level="" data-path="lesson-4---answering-research-questions.html"><a href="lesson-4---answering-research-questions.html#one-sample-t-test"><i class="fa fa-check"></i>One sample t-test</a></li>
+<li class="chapter" data-level="" data-path="lesson-4---answering-research-questions.html"><a href="lesson-4---answering-research-questions.html#detection"><i class="fa fa-check"></i>Detection</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lesson-4---answering-research-questions.html"><a href="lesson-4---answering-research-questions.html#descriptive-questions"><i class="fa fa-check"></i>Descriptive Questions</a>
+<ul>
+<li class="chapter" data-level="" data-path="lesson-4---answering-research-questions.html"><a href="lesson-4---answering-research-questions.html#line-graphs"><i class="fa fa-check"></i>Line graphs</a></li>
+<li class="chapter" data-level="" data-path="lesson-4---answering-research-questions.html"><a href="lesson-4---answering-research-questions.html#boxplots"><i class="fa fa-check"></i>Boxplots</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lesson-4---answering-research-questions.html"><a href="lesson-4---answering-research-questions.html#outliers"><i class="fa fa-check"></i>Outliers</a></li>
+<li class="chapter" data-level="" data-path="lesson-4---answering-research-questions.html"><a href="lesson-4---answering-research-questions.html#relation-questions"><i class="fa fa-check"></i>Relation Questions</a>
+<ul>
+<li class="chapter" data-level="" data-path="lesson-4---answering-research-questions.html"><a href="lesson-4---answering-research-questions.html#correlation"><i class="fa fa-check"></i>Correlation</a></li>
+<li class="chapter" data-level="" data-path="lesson-4---answering-research-questions.html"><a href="lesson-4---answering-research-questions.html#regression"><i class="fa fa-check"></i>Regression</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lesson-4---answering-research-questions.html"><a href="lesson-4---answering-research-questions.html#checklists"><i class="fa fa-check"></i>Checklists</a>
+<ul>
+<li class="chapter" data-level="" data-path="lesson-4---answering-research-questions.html"><a href="lesson-4---answering-research-questions.html#verschilvragen"><i class="fa fa-check"></i>verschilvragen</a></li>
+<li class="chapter" data-level="" data-path="lesson-4---answering-research-questions.html"><a href="lesson-4---answering-research-questions.html#verbandvragen"><i class="fa fa-check"></i>verbandvragen</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lesson-4---answering-research-questions.html"><a href="lesson-4---answering-research-questions.html#overview-r-functions-1"><i class="fa fa-check"></i>Overview R functions</a></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Intro into R, Reproducible research and machine learning</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="lesson-2---data-types-and-structures-in-r" class="section level1">
+<h1>Lesson 2 - Data types and structures in R</h1>
+<p><img src="images/02_1_rlogo.png" /></p>
+<div id="learning-objectives-2" class="section level2">
+<h2>Learning objectives</h2>
+<p>After this lesson:</p>
+<ul>
+<li></li>
+</ul>
+</div>
+<div id="data-in-r" class="section level2">
+<h2>Data in R</h2>
+Yesterday we played around with vectors in R. Vectors are one of the simpelest ways to store information in R. But
+<div id="exercise-2" class="section level5 unnumbered question">
+<h5>Exercise 2</h5>
+<p>Use the built-in dataset gss_cat from the forcats package to answer the following questions. gss_cat is a sample of data from the General Social Survey, which is a long-running US survey conducted by the independent research organization NORC at the University of Chicago.</p>
+<ol style="list-style-type: lower-alpha">
+<li>Which variables are factors?</li>
+<li>What are the levels of the “marital” variable?</li>
+</ol>
+</div>
+<details>
+<summary>
+Click for the answer
+</summary>
+<ol style="list-style-type: lower-alpha">
+<li></li>
+</ol>
+<div class="sourceCode" id="cb185"><pre class="sourceCode r Rchunk"><code class="sourceCode r"><span id="cb185-1"><a href="lesson-2---data-types-and-structures-in-r.html#cb185-1" aria-hidden="true" tabindex="-1"></a>gss_cat</span></code></pre></div>
+<pre class="Rout"><code>## # A tibble: 21,483 × 9
+##     year marital         age race  rincome        partyid            relig              denom      tvhours
+##    &lt;int&gt; &lt;fct&gt;         &lt;int&gt; &lt;fct&gt; &lt;fct&gt;          &lt;fct&gt;              &lt;fct&gt;              &lt;fct&gt;        &lt;int&gt;
+##  1  2000 Never married    26 White $8000 to 9999  Ind,near rep       Protestant         Southern …      12
+##  2  2000 Divorced         48 White $8000 to 9999  Not str republican Protestant         Baptist-d…      NA
+##  3  2000 Widowed          67 White Not applicable Independent        Protestant         No denomi…       2
+##  4  2000 Never married    39 White Not applicable Ind,near rep       Orthodox-christian Not appli…       4
+##  5  2000 Divorced         25 White Not applicable Not str democrat   None               Not appli…       1
+##  6  2000 Married          25 White $20000 - 24999 Strong democrat    Protestant         Southern …      NA
+##  7  2000 Never married    36 White $25000 or more Not str republican Christian          Not appli…       3
+##  8  2000 Divorced         44 White $7000 to 7999  Ind,near dem       Protestant         Lutheran-…      NA
+##  9  2000 Married          44 White $25000 or more Not str democrat   Protestant         Other            0
+## 10  2000 Married          47 White $25000 or more Strong republican  Protestant         Southern …       3
+## # … with 21,473 more rows</code></pre>
+<ol start="2" style="list-style-type: lower-alpha">
+<li></li>
+</ol>
+<div class="sourceCode" id="cb187"><pre class="sourceCode r Rchunk"><code class="sourceCode r"><span id="cb187-1"><a href="lesson-2---data-types-and-structures-in-r.html#cb187-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(gss_cat<span class="sc">$</span>marital)</span></code></pre></div>
+<pre class="Rout"><code>## [1] &quot;No answer&quot;     &quot;Never married&quot; &quot;Separated&quot;     &quot;Divorced&quot;      &quot;Widowed&quot;       &quot;Married&quot;</code></pre>
+</details>
+<div id="exercise-2-1" class="section level5 unnumbered question">
+<h5>Exercise 2</h5>
+<p>Run this code in R to create a tibble with categorical data:</p>
+<div class="sourceCode" id="cb189"><pre class="sourceCode r Rchunk"><code class="sourceCode r"><span id="cb189-1"><a href="lesson-2---data-types-and-structures-in-r.html#cb189-1" aria-hidden="true" tabindex="-1"></a>marital_status <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">&quot;data/lesson2/lesson2_exercise_8.2.rds&quot;</span>)</span></code></pre></div>
+<p>The levels of this dataset are: “No answer”, “Never married”, “Separated”, “Divorced”, “Widowed” and “Married”. Use this dataset and the levels to answer the following questions.</p>
+<ol style="list-style-type: lower-alpha">
+<li>Search for data values that are not in the level list.</li>
+<li>Correct the misspellings.</li>
+<li>How many data values are in each of the categorical levels?</li>
+</ol>
+</div>
+<details>
+<summary>
+Click for the answer
+</summary>
+<ol style="list-style-type: lower-alpha">
+<li></li>
+</ol>
+<div class="sourceCode" id="cb190"><pre class="sourceCode r Rchunk"><code class="sourceCode r"><span id="cb190-1"><a href="lesson-2---data-types-and-structures-in-r.html#cb190-1" aria-hidden="true" tabindex="-1"></a>marital_levels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;No answer&quot;</span>, <span class="st">&quot;Never married&quot;</span>, <span class="st">&quot;Separated&quot;</span>, <span class="st">&quot;Divorced&quot;</span>, <span class="st">&quot;Widowed&quot;</span>, <span class="st">&quot;Married&quot;</span>)</span>
+<span id="cb190-2"><a href="lesson-2---data-types-and-structures-in-r.html#cb190-2" aria-hidden="true" tabindex="-1"></a><span class="fu">parse_factor</span>(marital_status<span class="sc">$</span>marital, <span class="at">levels =</span> marital_levels)</span></code></pre></div>
+<pre><code>## Warning: 3 parsing failures.
+##   row col           expected        actual
+##  1001  -- value in level set divorced     
+##  5001  -- value in level set Maried       
+## 10001  -- value in level set never married</code></pre>
+<pre class="Rout"><code>##    [1] Never married Divorced      Widowed       Never married Divorced      Married       Never married
+##    [8] Divorced      Married       Married       Married       Married       Married       Married      
+##   [15] Divorced      Married       Widowed       Never married Married       Married       Married      
+##   [22] Married       Never married Widowed       Widowed       Widowed       Widowed       Widowed      
+##   [29] Divorced      Widowed       Widowed       Married       Married       Never married Married      
+##   [36] Never married Never married Never married Never married Never married Married       Married      
+##   [43] Divorced      Never married Never married Never married Married       Married       Married      
+##   [50] Married       Never married Married       Married       Married       Married       Divorced     
+##   [57] Divorced      Divorced      Never married Never married Married       Married       Never married
+##   [64] Divorced      Never married Widowed       Divorced      Married       Never married Never married
+##   [71] Widowed       Widowed       Widowed       Widowed       Widowed       Never married Widowed      
+##   [78] Never married Married       Never married Married       Married       Widowed       Married      
+##   [85] Married       Divorced      Never married Separated     Never married Widowed       Widowed      
+##   [92] Married       Divorced      Never married Never married Never married Married       Married      
+##   [99] Widowed       Divorced      Married       Married       Married       Married       Widowed      
+##  [106] Married       Divorced      Divorced      Married       Never married Married       Married      
+##  [113] Separated     Married       Never married Divorced      Divorced      Separated     Married      
+##  [120] Widowed       Separated     Divorced      Married       Divorced      Never married Divorced     
+##  [127] Divorced      Married       Never married Never married Never married Married       Married      
+##  [134] Divorced      Widowed       Never married Widowed       Divorced      Separated     Widowed      
+##  [141] Never married Widowed       Widowed       Widowed       Widowed       Never married Never married
+##  [148] Never married Never married Never married Never married Never married Married       Married      
+##  [155] Separated     Never married Widowed       Widowed       Married       Married       Married      
+##  [162] Married       Married       Never married Married       Divorced      Never married Married      
+##  [169] Married       Married       Never married Never married Married       Married       Married      
+##  [176] Married       Married       Married       Married       Married       Married       Widowed      
+##  [183] Widowed       Married       Married       Married       Divorced      Married       Married      
+##  [190] Never married Never married Never married Divorced      Never married Never married Married      
+##  [197] Never married Separated     Never married Never married Divorced      Widowed       Separated    
+##  [204] Married       Married       Separated     Divorced      Divorced      Never married Married      
+##  [211] Married       Married       Married       Married       Never married Never married Never married
+##  [218] Married       Married       Separated     Married       Never married Married       Never married
+##  [225] Divorced      Never married Never married Never married Married       Married       Never married
+##  [232] Married       Widowed       Married       Never married Divorced      Married       Separated    
+##  [239] Married       Married       Married       Widowed       Married       Widowed       Married      
+##  [246] Never married Married       Married       Married       Widowed       Married       Married      
+##  [253] Married       Divorced      Never married Married       Married       Divorced      Married      
+##  [260] Never married Separated     Divorced      Widowed       Married       Separated     Widowed      
+##  [267] Married       Never married Never married Married       Married       Never married Never married
+##  [274] Never married Divorced      Widowed       Separated     Divorced      Widowed       Never married
+##  [281] Never married Never married Married       Married       Never married Never married Never married
+##  [288] Divorced      Never married Divorced      Married       Never married Separated     Separated    
+##  [295] Never married Married       Never married Divorced      Never married Never married Never married
+##  [302] Never married Divorced      Divorced      Married       Married       Married       Married      
+##  [309] Married       Divorced      Married       Married       Married       Never married Married      
+##  [316] Never married Never married Married       Married       Married       Divorced      Never married
+##  [323] Never married Married       Married       Married       Never married Never married Never married
+##  [330] Married       Widowed       Married       Married       Widowed       Married       Married      
+##  [337] Married       Never married Never married Married       Married       Married       Married      
+##  [344] Married       Never married Married       Married       Never married Never married Widowed      
+##  [351] Married       Married       Married       Never married Married       Married       Never married
+##  [358] Married       Divorced      Married       Married       Separated     Never married Never married
+##  [365] Married       Married       Divorced      Married       Married       Never married Never married
+##  [372] Never married Never married Divorced      Married       Married       Divorced      Never married
+##  [379] Never married Married       Never married Widowed       Married       Married       Divorced     
+##  [386] Married       Married       Separated     Married       Married       Married       Widowed      
+##  [393] Divorced      Married       Married       Married       Divorced      Married       Divorced     
+##  [400] Never married Married       Married       Never married Separated     Separated     Never married
+##  [407] Divorced      Married       Married       Married       Married       Married       Never married
+##  [414] Married       Married       Married       Married       Never married Married       Married      
+##  [421] Married       Married       Divorced      Divorced      Married       Married       Married      
+##  [428] Married       Never married Married       Never married Married       Never married Divorced     
+##  [435] Divorced      Divorced      Never married Married       Separated     Divorced      Widowed      
+##  [442] Divorced      Divorced      Never married Divorced      Widowed       Divorced      Divorced     
+##  [449] Divorced      Never married Divorced      Widowed       Widowed       Married       Married      
+##  [456] Never married Never married Never married Married       Married       Married       Widowed      
+##  [463] Divorced      Never married Married       Married       Married       Never married Married      
+##  [470] Married       Married       Widowed       Never married Married       Divorced      Divorced     
+##  [477] Married       Widowed       Married       Married       Married       Married       Married      
+##  [484] Never married Divorced      Married       Never married Separated     Widowed       Divorced     
+##  [491] Married       Married       Never married Separated     Never married Married       Married      
+##  [498] Married       Married       Never married Married       Married       Never married Divorced     
+##  [505] Married       Married       Married       Never married Never married Never married Never married
+##  [512] Never married Never married Never married Never married Never married Never married Married      
+##  [519] Separated     Married       Never married Divorced      Married       Widowed       Married      
+##  [526] Never married Married       Married       Never married Widowed       Never married Never married
+##  [533] Married       Married       Separated     Never married Never married Married       Married      
+##  [540] Married       Married       Divorced      Married       Married       Married       Married      
+##  [547] Married       Widowed       Separated     Separated     Never married Widowed       Widowed      
+##  [554] Divorced      Never married Separated     Divorced      Never married Never married Never married
+##  [561] Married       Married       Never married Married       Married       Married       Divorced     
+##  [568] Married       Married       Never married Married       Married       Divorced      Never married
+##  [575] Married       Married       Married       Never married Married       Never married Never married
+##  [582] Married       Married       Separated     Never married Never married Widowed       Married      
+##  [589] Married       Divorced      Married       Married       Married       Married       Married      
+##  [596] Married       Married       Widowed       Never married Divorced      Married       Married      
+##  [603] Married       Never married Never married Never married Never married Never married Never married
+##  [610] Married       Married       Never married Married       Married       Married       Married      
+##  [617] Never married Separated     Married       Never married Never married Married       Married      
+##  [624] Never married Married       Never married Divorced      Married       Divorced      Widowed      
+##  [631] Married       Never married Married       Never married Separated     Divorced      Never married
+##  [638] Widowed       Separated     Married       Never married Married       Never married Never married
+##  [645] Never married Divorced      Divorced      Never married Never married Married       Divorced     
+##  [652] Never married Married       Married       Widowed       Never married Separated     Divorced     
+##  [659] Divorced      Divorced      Never married Married       Divorced      Married       Separated    
+##  [666] Never married Married       Married       Married       Married       Married       Married      
+##  [673] Married       Never married Widowed       Never married Never married Divorced      Never married
+##  [680] Married       Never married Never married Married       Married       Married       Married      
+##  [687] Married       Never married Divorced      Separated     Divorced      Married       Married      
+##  [694] Married       Married       Married       Married       Married       Married       Never married
+##  [701] Divorced      Married       Divorced      Never married Never married Never married Never married
+##  [708] Widowed       Married       Married       Never married Never married Married       Divorced     
+##  [715] Married       Married       Married       Widowed       Never married Never married Divorced     
+##  [722] Married       Married       Married       Divorced      Divorced      Married       Widowed      
+##  [729] Never married Widowed       Married       Widowed       Divorced      Married       Married      
+##  [736] Widowed       Widowed       Divorced      Separated     Widowed       Married       Married      
+##  [743] Married       Never married Married       Married       Married       Married       Married      
+##  [750] Married       Married       Married       Married       Married       Married       Married      
+##  [757] Never married Never married Married       Divorced      Married       Married       Never married
+##  [764] Never married Widowed       Married       Widowed       Married       Married       Never married
+##  [771] Never married Never married Divorced      Divorced      Never married Divorced      Never married
+##  [778] Never married Never married Married       Divorced      Married       Widowed       Married      
+##  [785] Married       Never married Married       Divorced      Divorced      Never married Never married
+##  [792] Divorced      Divorced      Married       Married       Never married Married       Separated    
+##  [799] Married       Married       Married       Never married Never married Married       Married      
+##  [806] Married       Never married Widowed       Widowed       Widowed       Widowed       Married      
+##  [813] Married       Widowed       Married       Married       Never married Widowed       Widowed      
+##  [820] Never married Divorced      Divorced      Married       Divorced      Separated     Married      
+##  [827] Married       Widowed       Never married Married       Never married Married       Married      
+##  [834] Never married Married       Married       Married       Widowed       Married       Widowed      
+##  [841] Married       Never married Separated     Widowed       Married       Widowed       Never married
+##  [848] Widowed       Widowed       Widowed       Married       Married       Widowed       Separated    
+##  [855] Married       Married       Separated     Married       Widowed       Married       Divorced     
+##  [862] Never married Widowed       Never married Never married Divorced      Married       Never married
+##  [869] Married       Divorced      Married       Married       Never married Divorced      Never married
+##  [876] Divorced      Widowed       Divorced      Married       Divorced      Divorced      Widowed      
+##  [883] Widowed       Never married Married       Divorced      Married       Married       Divorced     
+##  [890] Married       Widowed       Married       Married       Married       Married       Married      
+##  [897] Married       Married       Married       Married       Never married Married       Never married
+##  [904] Divorced      Married       Widowed       Divorced      Divorced      Married       Divorced     
+##  [911] Married       Married       Never married Divorced      Separated     Married       Never married
+##  [918] Divorced      Never married Never married Widowed       Never married Married       Married      
+##  [925] Divorced      Separated     Separated     Married       Divorced      Divorced      Married      
+##  [932] Divorced      Married       Divorced      Never married Divorced      Divorced      Never married
+##  [939] Never married Never married Married       Widowed       Married       Married       Divorced     
+##  [946] Married       Divorced      Divorced      Married       Married       Married       Married      
+##  [953] Never married Divorced      Divorced      Never married Separated     Never married Married      
+##  [960] Married       Married       Married       Married       Never married Married       Never married
+##  [967] Married       Divorced      Married       Married       Never married Never married Married      
+##  [974] Divorced      Widowed       Divorced      Never married Married       Married       Divorced     
+##  [981] Married       Never married Never married Never married Separated     Never married Divorced     
+##  [988] Married       Divorced      Married       Married       Married       Married       Married      
+##  [995] Married       Married       Never married Married       Married       Married      
+##  [ reached getOption(&quot;max.print&quot;) -- omitted 20483 entries ]
+## attr(,&quot;problems&quot;)
+## # A tibble: 3 × 4
+##     row   col expected           actual       
+##   &lt;int&gt; &lt;int&gt; &lt;chr&gt;              &lt;chr&gt;        
+## 1  1001    NA value in level set divorced     
+## 2  5001    NA value in level set Maried       
+## 3 10001    NA value in level set never married
+## Levels: No answer Never married Separated Divorced Widowed Married</code></pre>
+<ol start="2" style="list-style-type: lower-alpha">
+<li></li>
+</ol>
+<div class="sourceCode" id="cb193"><pre class="sourceCode r Rchunk"><code class="sourceCode r"><span id="cb193-1"><a href="lesson-2---data-types-and-structures-in-r.html#cb193-1" aria-hidden="true" tabindex="-1"></a>marital_status<span class="sc">$</span>marital[<span class="dv">1001</span>] <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Divorced&quot;</span>)</span>
+<span id="cb193-2"><a href="lesson-2---data-types-and-structures-in-r.html#cb193-2" aria-hidden="true" tabindex="-1"></a>marital_status<span class="sc">$</span>marital[<span class="dv">5001</span>] <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Married&quot;</span>)</span>
+<span id="cb193-3"><a href="lesson-2---data-types-and-structures-in-r.html#cb193-3" aria-hidden="true" tabindex="-1"></a>marital_status<span class="sc">$</span>marital[<span class="dv">10001</span>] <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Never married&quot;</span>)</span></code></pre></div>
+<ol start="3" style="list-style-type: lower-alpha">
+<li></li>
+</ol>
+<div class="sourceCode" id="cb194"><pre class="sourceCode r Rchunk"><code class="sourceCode r"><span id="cb194-1"><a href="lesson-2---data-types-and-structures-in-r.html#cb194-1" aria-hidden="true" tabindex="-1"></a>marital_status <span class="sc">%&gt;%</span> <span class="fu">count</span>(marital)</span></code></pre></div>
+<pre class="Rout"><code>## # A tibble: 6 × 2
+##   marital           n
+##   &lt;chr&gt;         &lt;int&gt;
+## 1 Divorced       3383
+## 2 Married       10117
+## 3 Never married  5416
+## 4 No answer        17
+## 5 Separated       743
+## 6 Widowed        1807</code></pre>
+</details>
+<div class="tip">
+<p>Always think about the variables in your dataset. Are they categorical, continuous or discrete? Let’s say we test different variables in the people in this class:</p>
+<ul>
+<li><strong>continuous variables</strong>: numeric variables that can have any value between any two values. Examples: the hair length (can be anything from 0 to let’s say 400 cm, including for instance 15,36791 cm.), body temperature, pH of a magic potion.</li>
+<li><strong>discrete variables</strong>: also numbers, but these numbers can’t be anything between certain limits. They have discrete options. Typically, this is count data, but not always. For instance: the number of people wearing blue shirts (can be 3, 5 or 8, but can’t be 5,36791 or 2,6), the result of rolling a die.</li>
+<li><strong>categorical variables</strong>: contain a finite number of categories or distinct groups. For instance, eye colour (blue, brown, green, grey, etc), home town (Utrecht, Amsterdam, Zuidlaren, etc), marital status (married, unmarried).</li>
+</ul>
+<p>When you are working with a categorical variable, do store it as a factor! R will then recognise it being categorical, and handle it as such when doing calculations or making plots.</p>
+</div>
+</div>
+<div id="oefenopdracht-thuis" class="section level2">
+<h2>Oefenopdracht (thuis)</h2>
+<div class="dagopdracht">
+<p>Maak de onderstaande opdrachten m.b.v. R. Noteer de gebruikte R code in een R script. Zorg ervoor dat je de code voorziet van uitleg in de vorm van comments (regels die beginnen met <code>#</code>) en dat je ook de antwoorden op de vragen in de vorm van comments in het R script noteert. Komende les bespreken we deze opdracht.</p>
+<ol style="list-style-type: decimal">
+<li><p>In deze opdracht ga je werken met de Glass dataset. Deze dataset is een onderdeel van de <code>mlbench</code> package. Dit package is al geïnstalleerd.</p>
+<ol style="list-style-type: lower-alpha">
+<li>Laad het package in R m.b.v. de <code>library()</code> functie.</li>
+<li>Open de Glass dataset in R via deze regel code: <code>data(Glass)</code>.</li>
+</ol></li>
+<li><p>Nu je de dataset hebt geopend in R, kun je informatie over de dataset gaan verzamelen:</p>
+<ol style="list-style-type: lower-alpha">
+<li>Wat voor data type (vector, list, data.frame, tibble etc.) is de Glass dataset?</li>
+<li>Wat zijn de dimensies (aantal rijen/kolommen) van de Glass dataset?</li>
+<li>Gebruik de help functie om informatie te vinden over de Glass dataset. Beschrijf kort in eigen woorden wat voor data deze dataset bevat.</li>
+</ol></li>
+<li><p>We gaan nu twee kleinere datasets maken uit de Glass dataset:</p>
+<ol style="list-style-type: lower-alpha">
+<li>Maak een nieuwe dataset met daarin alleen de data voor glastype 1. Je kunt hiervoor de volgende code gebruiken: <code>glass1 &lt;- Glass[Glass$Type == 1,]</code>.</li>
+<li>Maak ook een nieuwe dataset met daarin alleen de data voor glastype 5. Pas hiervoor de code zoals genoemd bij vraag (a) aan.</li>
+<li>Hoeveel metingen (= aantal rijen) zijn er gedaan voor glastype 1? En hoeveel metingen voor glastype 5?</li>
+</ol></li>
+<li><p>We willen kijken wat de verschillen zijn tussen glastype 1 en glastype 5:</p>
+<ol style="list-style-type: lower-alpha">
+<li>Wat is het gemiddelde ijzergehalte voor glastype 1? En wat is het gemiddelde ijzergehalte voor glastype 5?</li>
+<li>Wat is het minimale siliciumgehalte van glastype 5? En wat is het maximale siliciumgehalte van glastype 5?</li>
+<li>Is er een verschil in brekingsindex tussen glastype 1 en 5? Beargumenteer je antwoord. Bereken hiervoor de gemiddelde waarden en de standaardafwijking (<code>sd</code> functie in R).</li>
+<li>Maak een tibble waarin je de resultaten van opgave 4c samenvat. De kolommen van de tibble zijn ‘glastype’, ‘brekingsindex_gemiddelde’, en ‘brekingsindex_stdev’.</li>
+</ol></li>
+</ol>
+</div>
+</div>
+<div id="overview-r-functions-first-two-lessons" class="section level2">
+<h2>Overview R functions first two lessons</h2>
+<div id="to-create-an-object" class="section level4">
+<h4>To create an object</h4>
+<table>
+<thead>
+<tr class="header">
+<th align="left">function</th>
+<th align="left">package</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">c()</td>
+<td align="left">base</td>
+</tr>
+<tr class="even">
+<td align="left">list()</td>
+<td align="left">base</td>
+</tr>
+<tr class="odd">
+<td align="left">data.frame()</td>
+<td align="left">base</td>
+</tr>
+<tr class="even">
+<td align="left">tibble()</td>
+<td align="left">tibble</td>
+</tr>
+<tr class="odd">
+<td align="left">as_tibble()</td>
+<td align="left">tibble</td>
+</tr>
+<tr class="even">
+<td align="left">factor()</td>
+<td align="left">forcats</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="to-inspect-type-of-datastructure" class="section level4">
+<h4>To inspect type of datastructure</h4>
+<table>
+<thead>
+<tr class="header">
+<th align="left">function</th>
+<th align="left">package</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">is.vector()</td>
+<td align="left">base</td>
+</tr>
+<tr class="even">
+<td align="left">is.data.frame()</td>
+<td align="left">base</td>
+</tr>
+<tr class="odd">
+<td align="left">is.list()</td>
+<td align="left">base</td>
+</tr>
+<tr class="even">
+<td align="left">is_tibble()</td>
+<td align="left">tibble</td>
+</tr>
+<tr class="odd">
+<td align="left">typeof()</td>
+<td align="left">base</td>
+</tr>
+<tr class="even">
+<td align="left">str()</td>
+<td align="left">utils</td>
+</tr>
+<tr class="odd">
+<td align="left">class()</td>
+<td align="left">base</td>
+</tr>
+<tr class="even">
+<td align="left">parse_factor()</td>
+<td align="left">readr</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="properties-of-object" class="section level4">
+<h4>Properties of object</h4>
+<table>
+<thead>
+<tr class="header">
+<th align="left">function</th>
+<th align="left">package</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">dim()</td>
+<td align="left">base</td>
+</tr>
+<tr class="even">
+<td align="left">length()</td>
+<td align="left">base</td>
+</tr>
+<tr class="odd">
+<td align="left">nchar()</td>
+<td align="left">base</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="view-contents-of-object" class="section level4">
+<h4>View contents of object</h4>
+<table>
+<thead>
+<tr class="header">
+<th align="left">function</th>
+<th align="left">package</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">View()</td>
+<td align="left">utils</td>
+</tr>
+<tr class="even">
+<td align="left">names()</td>
+<td align="left">base</td>
+</tr>
+<tr class="odd">
+<td align="left">head()</td>
+<td align="left">utils</td>
+</tr>
+<tr class="even">
+<td align="left">tail()</td>
+<td align="left">utils</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="arithmetic" class="section level4">
+<h4>Arithmetic</h4>
+<table>
+<thead>
+<tr class="header">
+<th align="left">function</th>
+<th align="left">package</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">sum()</td>
+<td align="left">base</td>
+</tr>
+<tr class="even">
+<td align="left">mean()</td>
+<td align="left">base</td>
+</tr>
+<tr class="odd">
+<td align="left">median()</td>
+<td align="left">stats</td>
+</tr>
+<tr class="even">
+<td align="left">summary()</td>
+<td align="left">base</td>
+</tr>
+<tr class="odd">
+<td align="left">na.omit()</td>
+<td align="left">stats</td>
+</tr>
+<tr class="even">
+<td align="left">min()</td>
+<td align="left">base</td>
+</tr>
+<tr class="odd">
+<td align="left">max()</td>
+<td align="left">base</td>
+</tr>
+<tr class="even">
+<td align="left">runif()</td>
+<td align="left">stats</td>
+</tr>
+<tr class="odd">
+<td align="left">seq()</td>
+<td align="left">base</td>
+</tr>
+<tr class="even">
+<td align="left">count()</td>
+<td align="left">tidyverse</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="data-transformation" class="section level4">
+<h4>Data transformation</h4>
+<table>
+<thead>
+<tr class="header">
+<th align="left">function</th>
+<th align="left">package</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">sort()</td>
+<td align="left">base</td>
+</tr>
+<tr class="even">
+<td align="left">paste()</td>
+<td align="left">base</td>
+</tr>
+<tr class="odd">
+<td align="left">paste0()</td>
+<td align="left">base</td>
+</tr>
+<tr class="even">
+<td align="left">append()</td>
+<td align="left">base</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="lesson-1---introduction-to-r-and-rstudio.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="lesson-3---importing-data-tidy-data.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": true,
+"facebook": false,
+"twitter": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": false
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "section",
+"scroll_highlight": true
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

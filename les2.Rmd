@@ -1,0 +1,186 @@
+# Lesson 2 - Data types and structures in R
+
+```{r include=FALSE}
+load("course_urls.RData")
+les <- 2
+```
+
+![](images/02_1_rlogo.png)
+
+## Learning objectives
+
+After this lesson:
+
+-        
+
+## Data in R
+
+Yesterday we played around with vectors in R. Vectors are one of the simpelest ways to store information in R. But 
+<div class="question">
+##### Exercise `r les` {-} 
+
+Use the built-in dataset gss_cat from the forcats package to answer the following questions. gss_cat is a sample of data from the General Social Survey, which is a long-running US survey conducted by the independent research organization NORC at the University of Chicago.
+
+(a) Which variables are factors?
+(b) What are the levels of the "marital" variable?
+</div>
+
+<details><summary>Click for the answer</summary>
+
+(a)
+```{r}
+gss_cat
+```
+(b)
+```{r}
+levels(gss_cat$marital)
+```
+</details>
+
+<div class="question">
+##### Exercise `r les` {-} 
+
+Run this code in R to create a tibble with categorical data:
+
+```{r}
+marital_status <- readRDS("data/lesson2/lesson2_exercise_8.2.rds")
+```
+
+The levels of this dataset are: "No answer", "Never married", "Separated", "Divorced", "Widowed" and "Married". Use this dataset and the levels to answer the following questions.
+
+(a) Search for data values that are not in the level list.
+(b) Correct the misspellings. 
+(c) How many data values are in each of the categorical levels?
+</div>
+
+<details><summary>Click for the answer</summary>
+
+(a)
+```{r}
+marital_levels <- c("No answer", "Never married", "Separated", "Divorced", "Widowed", "Married")
+parse_factor(marital_status$marital, levels = marital_levels)
+```
+(b)
+```{r}
+marital_status$marital[1001] <- c("Divorced")
+marital_status$marital[5001] <- c("Married")
+marital_status$marital[10001] <- c("Never married")
+```
+(c)
+```{r}
+marital_status %>% count(marital)
+```
+</details>
+
+<div class="tip">
+Always think about the variables in your dataset. Are they categorical, continuous or discrete? Let's say we test different variables in the people in this class:
+
+ - **continuous variables**: numeric variables that can have any value between any two values. Examples: the hair length (can be anything from 0 to let's say 400 cm, including for instance 15,36791 cm.), body temperature, pH of a magic potion.
+ - **discrete variables**: also numbers, but these numbers can't be anything between certain limits. They have discrete options. Typically, this is count data, but not always. For instance: the number of people wearing blue shirts (can be 3, 5 or 8, but can't be 5,36791 or 2,6), the result of rolling a die.
+ - **categorical variables**: contain a finite number of categories or distinct groups. For instance, eye colour (blue, brown, green, grey, etc), home town (Utrecht, Amsterdam, Zuidlaren, etc), marital status (married, unmarried).
+
+When you are working with a categorical variable, do store it as a factor! R will then recognise it being categorical, and handle it as such when doing calculations or making plots. 
+</div>
+
+## Oefenopdracht (thuis) 
+
+<div class="dagopdracht">
+
+Maak de onderstaande opdrachten m.b.v. R. Noteer de gebruikte R code in een R script. Zorg ervoor dat je de code voorziet van uitleg in de vorm van comments (regels die beginnen met `#`) en dat je ook de antwoorden op de vragen in de vorm van comments in het R script noteert. Komende les bespreken we deze opdracht.
+
+1.	In deze opdracht ga je werken met de Glass dataset. Deze dataset is een onderdeel van de `mlbench` package. Dit package is al geïnstalleerd. 
+
+    a.	Laad het package in R m.b.v. de `library()` functie.
+    b.	Open de Glass dataset in R via deze regel code: `data(Glass)`.    
+
+2.	Nu je de dataset hebt geopend in R, kun je informatie over de dataset gaan verzamelen:
+
+    a.	Wat voor data type (vector, list, data.frame, tibble etc.) is de Glass dataset?
+    b.	Wat zijn de dimensies (aantal rijen/kolommen) van de Glass dataset?
+    c.	Gebruik de help functie om informatie te vinden over de Glass dataset. Beschrijf kort in eigen woorden wat voor data deze dataset bevat.     
+
+3.	We gaan nu twee kleinere datasets maken uit de Glass dataset:
+
+    a.	Maak een nieuwe dataset met daarin alleen de data voor glastype 1. Je kunt hiervoor de volgende code gebruiken: `glass1 <- Glass[Glass$Type == 1,]`. 
+    b.	Maak ook een nieuwe dataset met daarin alleen de data voor glastype 5. Pas hiervoor de code zoals genoemd bij vraag (a) aan. 
+    c.	Hoeveel metingen (= aantal rijen) zijn er gedaan voor glastype 1? En hoeveel metingen voor glastype 5?    
+    
+4.	We willen kijken wat de verschillen zijn tussen glastype 1 en glastype 5:
+
+    a.	Wat is het gemiddelde ijzergehalte voor glastype 1? En wat is het gemiddelde ijzergehalte voor glastype 5? 
+    b.	Wat is het minimale siliciumgehalte van glastype 5? En wat is het maximale siliciumgehalte van glastype 5?
+    c.	Is er een verschil in brekingsindex tussen glastype 1 en 5? Beargumenteer je antwoord. Bereken hiervoor de gemiddelde waarden en de standaardafwijking (`sd` functie in R). 
+    d.	Maak een tibble waarin je de resultaten van opgave 4c samenvat. De kolommen van de tibble zijn ‘glastype’, ‘brekingsindex_gemiddelde’, en ‘brekingsindex_stdev’. 
+
+
+</div>
+
+
+## Overview R functions first two lessons
+
+
+#### To create an object 
+
+function | package
+:------ | :--------
+c()       | base
+list()    | base
+data.frame() | base
+tibble()  | tibble
+as_tibble() | tibble
+factor() | forcats
+
+#### To inspect type of datastructure 
+
+function | package
+:------ | :--------
+is.vector() | base
+is.data.frame() | base
+is.list() | base
+is_tibble() | tibble
+typeof() | base
+str() | utils
+class() | base
+parse_factor() | readr
+
+#### Properties of object
+
+function | package
+:------ | :--------
+dim() | base
+length() | base
+nchar() | base
+
+#### View contents of object
+
+function | package
+:------ | :--------
+View() | utils
+names() | base
+head() | utils
+tail() | utils
+
+#### Arithmetic
+
+function | package
+:------ | :--------
+sum() | base
+mean() | base
+median() | stats
+summary() | base
+na.omit() | stats
+min() | base
+max() | base
+runif() | stats
+seq() | base
+count() | tidyverse
+
+#### Data transformation
+
+function | package
+:------ | :--------
+sort() | base
+paste() | base
+paste0() | base
+append() | base
+

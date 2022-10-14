@@ -1,0 +1,331 @@
+---
+title: "Intro into R, Reproducible research and machine learning"
+author: ""
+site: bookdown::bookdown_site
+output: 
+    bookdown::gitbook:
+        css: style.css
+        number_sections: false
+        anchor_sections: false
+        split_by: chapter
+        config:
+            sharing:
+                 github: yes
+                 facebook: no
+                 twitter: no
+                 all: no
+            toc:
+                collapse: section
+                scroll_highlight: yes
+                before: <li class="toc-logo"><a href="./"><img style="float:left;" src="images/voorbeeldlogo2.png"></a> <h4 class=".paddingtitel ">DAUR1 </h2></li>
+---
+
+# Introduction {-}
+
+Placeholder
+
+
+## Course outline
+### Course material
+### Lessons
+### Exercises
+### Rstudio server
+## Learning objectives
+
+<!--chapter:end:index.Rmd-->
+
+
+# Preparation before the course
+
+Placeholder
+
+
+## Let's get started! 
+### Remarks before starting
+#### Windows users
+#### Mac users
+## Updating R and RStudio
+### Windows users
+#### Update RStudio 
+#### Update R 
+### Mac users
+#### Update RStudio
+#### Update R
+## Install R {#installRhere}
+### Windows 
+### Mac 
+## Install RStudio
+### Install RStudio itself 
+### Installing packages
+### Loading packages
+## If all is still not well
+## reader
+## Introduction to R
+### Variables and functions
+## Rstudio
+### Console
+## Projects
+### Starting a new Project in Rstudio 
+### Opening a project in Rstudio
+### More help
+## DIY
+###### Example
+
+<!--chapter:end:les0_preparation.Rmd-->
+
+
+# Lesson 1 - Introduction to R and RStudio
+
+Placeholder
+
+
+## Learning objectives
+## Starting to work within a project
+### Running code in Rstudio
+### Variables
+##### Exercise `r les` {-} 
+### Functions
+##### Exercise `r les` {-} 
+### Packages and libraries
+### The help function
+## Data types and structures in R
+##### Exercise `r les` {-} 
+## Indexing
+###### Example
+###### Example
+###### Example
+###### Example
+##### Exercise `r les` {-} 
+## Missing values
+###### Example
+###### Example
+## More complicated data
+## Lists 
+###### Example
+### Selecting list elements
+###### Example
+###### Example
+##### Exercise `r les` {-} 
+##### Exercise `r les` {-} 
+### Headers
+###### Example
+###### Example
+## Dataframes
+###### Example
+### Data analysis using dataframes
+###### Example
+## Tibbles
+###### Example
+###### Example
+## Factors
+## using functions: drc
+##### Exercise `r les` {-} 
+## scripts and Rmarkdown
+### scripts
+##### Exercise `r les` {-} 
+## Rmarkdown
+## YAML header
+###### Example
+## Code chunks
+## Output control
+##### Exercise `r les` {-}
+##### Exercise `r les` {-}
+## Plain text formatting
+##### Exercise `r les` {-}
+## Here package
+###### Example
+###### Example
+##### Exercise `r les` {-}
+## Creating a new RMarkdown file
+##### Exercise `r les` {-}
+
+<!--chapter:end:les1.Rmd-->
+
+
+# Lesson 2 - Data types and structures in R
+
+Placeholder
+
+
+## Learning objectives
+## Data in R
+##### Exercise `r les` {-} 
+##### Exercise `r les` {-} 
+## Oefenopdracht (thuis) 
+## Overview R functions first two lessons
+#### To create an object 
+#### To inspect type of datastructure 
+#### Properties of object
+#### View contents of object
+#### Arithmetic
+#### Data transformation
+
+<!--chapter:end:les2.Rmd-->
+
+
+# Lesson 3 - Importing data & tidy data
+
+Placeholder
+
+
+## Learning objectives
+## Importing text files
+### separators 
+###### Example
+###### Example
+###### Example
+### extracting numbers
+###### Example
+###### Example
+##### Exercise `r les` {-} 
+##### Exercise `r les` {-} 
+## Setting variable (column) names
+###### Example
+###### Example
+###### Example
+###### Example
+##### Exercise `r les` {-}  
+## Importing Excel files
+###### Example
+###### Example
+###### Example
+##### Exercise `r les` {-} 
+## Saving and importing R_Objects
+###### Example
+###### Example
+## Inspecting your data
+###### Example
+###### Example
+## What is tidy data?
+##### Exercise `r les` {-}    {#onderzoektidyvraag}
+## Making your data tidy: gathering
+###### Example
+##### Exercise `r les` {-} 
+##### Exercise `r les` {-} 
+## Making_your_data_tidy: spreading
+###### Example
+##### Exercise `r les` {-} 
+## Making_your_data_tidy: separate
+###### Example
+###### Example
+###### Example
+###### Example
+##### Exercise `r les` {-} 
+## Checking normality
+###### Example
+## map functions
+##### Exercise `r les` {-} 
+###### Example
+###### Example
+###### Example
+##### Exercise 7
+### Q-Q plots
+## Histograms
+##### Exercise `r les` {-} 
+## Overview R functions
+#### Data import of plain text files
+#### Data import of Excel files
+#### Inspecting your data
+#### Tidy Data
+
+<!--chapter:end:les3.Rmd-->
+
+
+# Lesson 4 - Answering research questions
+
+Placeholder
+
+
+## Learning objectives
+## Difference Questions
+### Practice making bar charts
+###### Examples
+###### Examples
+###### Examples
+##### Exercise `r les` {-} 
+#### Grouped bar graphs
+#### Bar graphs with mean ± standard deviation
+### Two sample t-tests
+### Unpaired two sample t test
+#### 1. Get the data and prepare the data
+#### 2. Plot the data
+#### 3. Check normality
+##### Exercise 7
+#### 4. Check the variances
+###### Example
+###### Example
+#### 5. Perform the t-test
+###### Example
+#### 5. Draw a conclusion
+##### Exercise `r les` {-} 
+### Paired two sample t test
+#### 1. Load the data 
+#### 2. Plot the data
+#### 3. Check normality
+#### 4. Perform the t-test
+###### Example
+###### Example
+#### 5. Draw a conclusion
+### Plotting significance
+### ANOVA
+#### 1. Load data, prepare data
+#### 2. Plot using bargraph 
+#### 3. Check normality (Shapio-Wilk) of groups separately
+###### Example
+#### 4. Perform ANOVA
+###### Example
+#### 5. Draw a conclusion
+#### 6. Post hoc tests
+##### Exercise `r les` {-} 
+### One sample t-test
+#### 1. Load data, prepare data
+#### 2. Plot the data
+##### Exercise `r les` {-} 
+#### 3. Check normality 
+##### Exercise `r les` {-} 
+#### 4. Perform one sample t-test
+#### 5. Draw a conclusion
+### Detection 
+## Descriptive Questions 
+### Line graphs
+###### Example
+###### Example
+###### Example
+##### Exercise `r les` {-} 
+##### Exercise `r les` {-} 
+###### example:
+### Boxplots
+###### Example
+##### Exercise `r les` {-} 
+###### Example 
+###### Example
+###### Example
+##### Exercise `r les` {-} 
+## Outliers
+## Relation Questions
+### Correlation
+#### 1. load data, prepare data
+#### 2. plot using scatterplot
+#### 3. perform correlation analysis
+#### 4. draw a conclusion
+##### Exercise `r les` {-} 
+##### Exercise `r les` {-} 
+### Regression
+#### 1. load data, prepare data
+#### 2. plot using scatterplot, include trendline
+#### &
+#### 3. perform regression analysis
+#### 4. use model for whatever you like
+## Checklists 
+### verschilvragen
+#### one sample design
+#### two sample design
+#### ANOVA (> 2 conditions)
+### verbandvragen
+## Overview R functions
+#### To create a graph 
+#### Data transformation
+#### Arithmetic
+
+<!--chapter:end:les4.Rmd-->
+

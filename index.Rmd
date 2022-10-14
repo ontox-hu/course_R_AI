@@ -43,8 +43,7 @@ save(
 knitr::opts_chunk$set(class.source="Rchunk", class.output="Rout")
 ```
 
-
-**Teachers: Bas van Gestel & Michael Liem**
+# Introduction {-}
 
 Welcome to the course on the basics of data analysis in R and an intro in Machine learning. This course consists of 5 lessons. You can find these lessons in the menu on the left. Each lesson starts with a short introduction by the teachers. After that, you are supposed to study the lessons yourself and make the exercises. During the lessons, you can ask questions to the teachers and the teachers will provide feedback. It is very important that you make all exercises. You will not learn using R by reading about it. 
 
