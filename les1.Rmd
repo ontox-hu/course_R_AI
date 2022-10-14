@@ -1418,7 +1418,7 @@ In the RMarkdown output file, data frames (tibbles) are printed in the same way 
 
 Open and knit this RMarkdown file. Study the code and the RMarkdown output format.
 
-
+There is an example in the .Rmd file on how to make APA format tables.
 
 ## Plain text formatting
 
