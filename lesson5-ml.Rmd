@@ -1,0 +1,20 @@
+# Lesson 5 - Answering research questions
+
+```{r include=FALSE}
+load("course_urls.RData")
+les <- 5
+```
+
+```{r echo=FALSE, message=FALSE, out.width = "50%", fig.align = "center"}
+knitr::include_graphics("images/04_1_ggplot.png")
+```
+
+## Learning objectives
+
+After this lesson:
+
+- You will have a basic understanding of different graph types and when to use them.
+- You can visualize categorical data with ggplot.
+- You can visualize continuous data with ggplot.
+- You can summarize data using boxplots.
+- you can perform the most common statistical tests with R.

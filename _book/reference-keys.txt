@@ -1,8 +1,0 @@
-fig:unnamed-chunk-23
-fig:Rlayout1
-fig:openscript
-fig:examplescript
-fig:unnamed-chunk-98
-fig:flowscheme
-fig:pairedfig
-fig:unnamed-chunk-250
