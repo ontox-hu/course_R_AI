@@ -3,7 +3,18 @@
 download `csv` files manually from here: https://drive.google.com/file/d/1KSlG8LAdoINJwgbd0rN0L_5XYRK23znx/view
 unzip the 7z file running the following in R:
 
-
 ```{r}
-install
+#install.packages("archive")
+library(archive)
+tf <- tempfile()
+td <- tempdir()
+file.path <- here::here(
+  "data",
+  "lesson5",
+  "chen709847237",
+  "data.7z"
+)
+
+archive(file.path, td) ## gets all the files
+
 ```

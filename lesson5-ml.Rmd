@@ -13,8 +13,131 @@ knitr::include_graphics("images/04_1_ggplot.png")
 
 After this lesson:
 
-- You will have a basic understanding of different graph types and when to use them.
-- You can visualize categorical data with ggplot.
-- You can visualize continuous data with ggplot.
-- You can summarize data using boxplots.
-- you can perform the most common statistical tests with R.
+- 
+
+## Packages
+```{r}
+library(tidyverse)
+#remotes::install_github("biobricks-ai/biobricks-R")
+library(biobricks)
+```
+
+## Data 
+For this lesson we will use a number of different datasets. Because we need datasets that include somewhat larger volumes of data, we also download dat on the fly.
+
+Let's get the datasets 
+Tox21 end Chembl, using the [biobricks.ai bricks]() 
+
+```{r, eval=FALSE}
+biobricks::local_bblib()
+initialize()
+brick_install("tox21")
+brick_pull("tox21") # OR build it with brick_repro("HGNC")
+tbls <- brick_load_arrow("tox21")
+names(tbls) # "hgnc_complete_set.parquet"
+
+## look at one table
+
+tox21_tbls  <- purrr::imap_dfr(tbls,~ tibble(tbl=.y,rows=nrow(.x))) |> arrange(desc(rows))
+tox21_names <- purrr::imap_dfr(tbls,~ tibble(tbl=.y,name=names(.x)))
+
+ids <- tox21_names |> filter(grepl("ID$",name))
+ids <- ids |> split(ids$name) |> discard(~nrow(.)<2) 
+names(ids)
+tox21_names 
+
+## look at one table
+x <- tbls$`tox21-ache-p3.aggregrated.parquet` |> dplyr::collect()
+x
+
+data_all <- 
+  map(
+    .x = tbls,
+    .f = dplyr::collect
+  )
+```
+
+## Comptox
+
+https://clowder.edap-cluster.com/datasets/61147fefe4b0856fdc65639b#folderId=631759a1e4b04f6bb1324618&page=0
+
+```{r}
+
+```
+
+## QSAR data
+
+[From the UCL repository](https://archive.ics.uci.edu/ml/datasets/QSAR+oral+toxicity)
+
+Metadata:
+Attribute Information:
+
+1024 binary molecular fingerprints and 1 experimental class:
+1-1024) binary molecular fingerprint
+1025) experimental class: positive (very toxic) and negative (not very toxic)
+
+Relevant Papers:
+
+[D. Ballabio, F. Grisoni, V. Consonni, R. Todeschini (2019), Integrated QSAR models to predict acute oral systemic toxicity, Molecular Informatics, 38, 180012; doi: 10.1002/minf.201800124](https://doi.org/10.1002/minf.201800124)
+
+```{r}
+library(archive)
+tf <- tempfile()
+td <- tempdir()
+file.path <- here::here(
+  "data",
+  "lesson5",
+  "qsar",
+  "qsar_oral_toxicity.zip"
+)
+
+download.file(url = "https://archive.ics.uci.edu/ml/machine-learning-databases/00508/qsar_oral_toxicity.zip", destfile = file.path)
+
+unzip(zipfile = file.path, exdir = td)
+td
+
+list.files(td)
+
+data_qsar <- read_csv2(
+  file.path(td, "qsar_oral_toxicity.csv"),
+  col_names = FALSE)
+
+```
+
+## EXERCISE
+ 
+ 1. Inspect the file `qsar_oral_toxicity.csv`, using the `head` command the terminal, or on Windows: open the file with Notepad. Are there headers in this file? 
+ 2. Rename the columns with a string from "f1" to "f1025"
+ 3. Reorder the classification column ("f1025") to be the first column
+ 4. Look at the dataset
+ 5. Tally the classification column, how many observations of each class do we have? Does this correspond with the meta data on UCL? Do you see a potential problem?
+ 6. Isolate the classification column in a new R object
+ 7. Remove the row with classifications ("f1025") from the data
+ 
+```{r}
+# answer
+names_new <- paste0("f", 1:1025)
+names(data_qsar) <- names_new
+data_qsar <- data_qsar |>
+  dplyr::relocate(f1025, .before = f1)
+
+data_qsar |> 
+  group_by(f1025) |>
+  tally()
+
+classes <- data_qsar$f1025
+```
+ 
+## Unsupervised machine learning
+Before we plan to do any kind of classification task on our data, it is good to consider doing an exploratory data analysis to learn more about our data.
+Here we use a principal component analysis and a k-means clustering to learn some patterns.
+
+## Principal Component Analysis
+
+
+
+
+ 
+ 
+
+
