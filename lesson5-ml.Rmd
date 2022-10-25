@@ -80,6 +80,9 @@ Relevant Papers:
 
 [D. Ballabio, F. Grisoni, V. Consonni, R. Todeschini (2019), Integrated QSAR models to predict acute oral systemic toxicity, Molecular Informatics, 38, 180012; doi: 10.1002/minf.201800124](https://doi.org/10.1002/minf.201800124)
 
+Files `ID.txt`,`class.csv` and `X.csv` in folder `./data/lesson5/qsar` were obtained from the author of the paper above via personal communication. Orinal sources files (Matlab scripts and matrix files can be downloaded from the paper's DOI as supplemental data). They are included here for reproducibility reasons in `./data/lesson5/qsar/oral_toxicity_data.rar`
+
+The code below downloads the data to a the `./data` folder and unzips the file in a temporary folder. We read the file into R from that temp file.
 ```{r}
 library(archive)
 tf <- tempfile()
@@ -97,46 +100,429 @@ unzip(zipfile = file.path, exdir = td)
 td
 
 list.files(td)
+```
 
+<div class="question">
+##### Exercise `r les` {-}
+ 
+ 1. Inspect the file `qsar_oral_toxicity.csv`, using the `head` command the terminal, or on Windows: open the file with Notepad. Are there headers in this file? 
+ 2. Rename the columns with a string from "f1" to "f1025"
+ 3. Reorder the classification column ("f1025") to be the first column, and rename this column to `class`
+ 4. Look at the dataset
+ 5. Tally the classification column, how many observations of each class do we have? Does this correspond with the meta data on UCL? Do you see a potential problem?
+ 6. Isolate the classification column in a new R object
+ 7. Remove the row with classifications ("f1025") from the data and store the resulting new dataframe as a matrix, using the `as.matrix()` function.
+</div>
+
+<details><summary>Click for the answer</summary>
+Reading the data into R. This file has no headers. The last column in the data contains the labels.
+```{r}
 data_qsar <- read_csv2(
   file.path(td, "qsar_oral_toxicity.csv"),
   col_names = FALSE)
 
 ```
-
-## EXERCISE
- 
- 1. Inspect the file `qsar_oral_toxicity.csv`, using the `head` command the terminal, or on Windows: open the file with Notepad. Are there headers in this file? 
- 2. Rename the columns with a string from "f1" to "f1025"
- 3. Reorder the classification column ("f1025") to be the first column
- 4. Look at the dataset
- 5. Tally the classification column, how many observations of each class do we have? Does this correspond with the meta data on UCL? Do you see a potential problem?
- 6. Isolate the classification column in a new R object
- 7. Remove the row with classifications ("f1025") from the data
- 
 ```{r}
 # answer
 names_new <- paste0("f", 1:1025)
 names(data_qsar) <- names_new
 data_qsar <- data_qsar |>
-  dplyr::relocate(f1025, .before = f1)
+  dplyr::relocate(f1025, .before = f1) |>
+  rename(class = f1025)
 
 data_qsar |> 
-  group_by(f1025) |>
+  group_by(class) |>
   tally()
 
-classes <- data_qsar$f1025
+classes <- data_qsar$class
+
+#data_qsar_all_numm <- data_qsar |>
+#  select(-class)
+
+## look at the data
+data_qsar
 ```
+</details> 
  
+## Exploratory Data Analysis
+
+ * Use visualisation and transformations to explore your data in a systematic way
+ * A task that statisticians call exploratory data analysis, or EDA for short. 
+ 
+### EDA is an iterative cycle; you:
+
+ 1) Generate questions about your data.
+ 2) Search for answers by visualising, transforming, and modelling your data.
+ 3) Use what you learn to refine your questions and/or generate new questions.
+
+__You do not need to know statistics for EDA, but it helps if you do!__
+
+### EDA is not a formal process with a strict set of rules
+
+ * EDA is a state of mind. 
+ * Should feel free to investigate every idea that occurs to you. 
+ * Some of these ideas will pan out, and some will be dead ends. 
+ * As your exploration continues, you will zoom in on a few particularly productive areas that you'll eventually write up and communicate to others.
+
+### EDA Steps
+
+To do data analysis, you'll need to deploy all the tools of EDA: visualisation, transformation, and modelling.
+
+When perfoming EDA consider
+
+ 1. What question(s) are you trying to solve (or prove wrong)?
+ 1. Which information do you need and can you come up with a plan to answer the question(s)
+ 1. What kind of data do you have and how do you treat different types?
+ 1. What’s missing from the data and how do you deal with it?
+ 1. Where are the outliers and why should you care about them?
+ 1. How can you add, change or remove features to get more out of your data?
+ 1. Do you need additional data from other sources to relate to the dataset under scrutany?
+ 1. Are underlying statitical assumptions met / how is data distribution looking?
+ 1. What (exploratory) models apply or fit well to the data?
+ 1. What is the undelying (experimental) design?
+ 1. Is there multi-colinearity?
+ 
+
+### Definitions
+
+ * A __variable__ is a quantity, quality, or property that you can measure. 
+ * A __value__ is the state of a variable when you measure it. The value of a variable may change from measurement to measurement.
+ * An __observation__ is a set of measurements made under similar conditions. An observation will contain several values, each associated with a different variable. I'll sometimes refer to an observation as a data point.
+ * Tables: __Tabular data__ is a set of values, each associated with a variable and an observation. 
+ * Tabular data is _tidy_ if each value is placed in its own "cell", each variable in its own column, and each observation in its own row. 
+ * In real-life, most data isn't tidy, as we've seen in __tidy data__.
+
+### Variation
+
+**Variation** is the tendency of the values of a variable to change from measurement to measurement. 
+
+ * Categorical variables can also vary if you measure across different subjects (e.g. the eye colors of different people), or different times (e.g. the energy levels of an electron at different moments). 
+ 
+ * Every variable has its own pattern of variation, which can reveal interesting information. The best way to understand that pattern is to visualise the distribution of the variable's values.
+
+### Categorical variables
+
+ * A variable is **categorical** if it can only take one of a small set of values.   
+ * In R, categorical variables are usually saved as factors or character vectors. 
+ * To examine the distribution of a categorical variable, use a bar chart:
+
+### Missing values
+In a dataset such as this, I do not expect to encouter any missing values. The fingerprints are calculated from molecules, so it would not make sense to have missing values somewhere. But just to be sure, we can get the sum of missing values like this:
+```{r}
+sum(is.na(data_qsar))
+```
+One less thing to worry about.
+
+### Distributions
+Here we have a distribution of either value `0` or `1` in the data. Let's check if on average the amount of `1`s is the same for positive and negative compounds. We will convert the dataframe to a long format to do more easy calculations and plotting with `{ggplot2}`
+
+Let's calculate first how many times a certain feature is present in the data.
+```{r}
+data_qsar_mtx <- data_qsar |>
+  select(-class) |>
+  as.matrix()
+
+features <- colSums(data_qsar_mtx) |> 
+  enframe()
+
+features |>
+  ggplot(aes(x = value)) +
+  geom_histogram()
+
+
+```
+So there are many featurs that are represented in the data at low frequencies and very few features that are respresented in the data very often.
+
+Let's see how these distributions look if we split for negative and positive compounds
+```{r}
+features_negative <- data_qsar |>
+  dplyr::filter(class == "negative") |>
+  select(-class) |>
+  as.matrix() |>
+  colSums() |>
+  enframe() |>
+  mutate(distro = "negative")
+
+features_positive <- data_qsar |>
+  dplyr::filter(class == "positive") |>
+  select(-class) |>
+  as.matrix() |>
+  colSums() |>
+  enframe() |>
+  mutate(distro = "positive")
+
+features_neg_pos <- dplyr::bind_rows(
+  features_negative,
+  features_positive
+)
+
+features_neg_pos |>
+  ggplot(aes(x = value)) +
+  geom_freqpoly(aes(colour = distro), alpha = 0.8)
+
+```
+
+
+<div class="question">
+##### Exercise `r les` {-}
+Are there differences in total amount of features between positive and negative compounds?
+
+Be aware, that we have more neagtives then positives in our data. Can you think of a way to normalize for this?
+
+</div>
+
+```{r}
+data_qsar |>
+  group_by(class) |>
+  tally() -> tally_compounds
+
+features_row_neg <- data_qsar |>
+  dplyr::filter(class == "negative") |>
+  select(-class) |>
+  as.matrix() |>
+  rowSums() |>
+  enframe() |>
+  mutate(distro = "negative")
+
+features_row_pos <- data_qsar |>
+  dplyr::filter(class == "positive") |>
+  select(-class) |>
+  as.matrix() |>
+  rowSums() |>
+  enframe() |>
+  mutate(distro = "positive")
+
+features_row_neg_pos <- dplyr::bind_rows(
+  features_row_neg,
+  features_row_pos
+)
+
+features_row_neg_pos |>
+  ggplot(aes(x = value)) +
+  geom_freqpoly(aes(colour = distro), alpha = 0.8)
+
+features_row_neg_pos |>
+  group_by(distro) |>
+  summarise(mean_feat = mean(value))
+
+```
+
+On average, there is not much differences in number of features per compound, if we compare negatives and positives 
+
+
+
+### Heatmap
+```{r}
+
+set.seed(123)
+data_qsar_sample <- data_qsar |>
+  mutate(row_id = 1:nrow(data_qsar)) |>
+  sample_frac(0.005)
+
+data_qsar_mtx_sample <- data_qsar_sample |>
+  select(-class) |>
+  as.matrix() 
+
+colnames(data_qsar_mtx_sample) <- paste0(
+  "c", 
+  1:ncol(data_qsar_mtx_sample)
+  )
+
+pheatmap::pheatmap(data_qsar_mtx)
+
+
+data_qsar_sample |> 
+  pivot_longer(cols = f1:f1024, values_to = "score", names_to = "feature") |>
+  ggplot(aes(
+    x = reorder(as_factor(feature), score), 
+    y = as_factor(score))) +
+  geom_tile(aes(fill = as_factor(score))) + facet_wrap(class~row_id) +
+  xlab(NULL) +
+  ylab(NULL) +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        strip.text.x = element_text(size = 4))
+  
+
+ggsave("test.svg", height = 20, width = 20, units = "cm", dpi = 300)
+
+```
+
 ## Unsupervised machine learning
 Before we plan to do any kind of classification task on our data, it is good to consider doing an exploratory data analysis to learn more about our data.
 Here we use a principal component analysis and a k-means clustering to learn some patterns.
 
 ## Principal Component Analysis
+For code see: https://cmdlinetips.com/2020/06/pca-with-tidymodels-in-r/
+```{r}
+library(tidymodels)
+library(tidyverse)
+#library(gapminder)
+theme_set(theme_bw(16))
+```
 
 
+```{r}
+pca_recipe <- recipe(~., data = data_qsar)
+pca_trans <- pca_recipe %>%
+  # center the data
+  step_center(all_numeric()) %>%
+  # center the data
+  step_scale(all_numeric()) %>%
+  # pca on all numeric variables
+  step_pca(all_numeric())
+
+pca_estimates <- prep(pca_trans) ## this step takes a bit longer to calculate
+pca_estimates$var_info
+sdev <- pca_estimates$steps[[3]]$res$sdev
+percent_variation <- sdev^2 / sum(sdev^2)
+
+var_df <- data.frame(PC=paste0("PC",1:length(sdev)),
+                     var_explained=percent_variation,
+                     stringsAsFactors = FALSE)
+
+var_df %>%
+  mutate(PC = fct_inorder(PC)) %>%
+  ggplot(aes(x=PC,y=var_explained))+geom_col()
+
+juice(pca_estimates) 
+juice(pca_estimates) %>%
+  ggplot(aes(PC1, PC2)) +
+  geom_point(aes(color = class), alpha = 0.3, size = 2)+
+  labs(title="PCA from tidymodels")
+```
 
 
+## t-SNE
+```{r}
+install.packages("embed")
+library(embed)
+pca_recipe <- recipe(~., data = data_qsar)
+pca_trans <- pca_recipe %>%
+  # center the data
+  step_center(all_numeric()) %>%
+  # center the data
+  step_scale(all_numeric()) %>%
+  # pca on all numeric variables
+  step_umap(all_numeric())
+
+pca_estimates <- prep(pca_trans) ## this step takes a bit longer to calculate
+pca_estimates$var_info
+juice(pca_estimates) 
+juice(pca_estimates) %>%
+  ggplot(aes(UMAP1, UMAP2)) +
+  geom_point(aes(color = class), alpha = 0.3, size = 2)+
+  labs(title="UMAP (t-SNE) from tidymodels")
+
+```
+
+## Regression tree
+
+Beause we have class imbalnce we use a stratification approach
+```{r}
+
+## prepare data splits
+set.seed(123)
+qsar_split <- initial_split(data = data_qsar, 
+                             prop = 0.80, strata = class)
+qsar_train <- training(qsar_split)
+qsar_test <- testing(qsar_split)
+```
+
+Let's look at the tally
+https://r4ds.github.io/bookclub-tmwr/class-imbalance.html
+```{r}
+qsar_test |>
+  group_by(class) |>
+  tally()
+
+qsar_train |>
+  group_by(class) |>
+  tally()
+```
+
+## Random Forest
+
+https://deepai.org/machine-learning-glossary-and-terms/random-forest
+https://juliasilge.com/blog/sf-trees-random-tuning/
+https://www.r-bloggers.com/2020/04/predicting-large-and-imbalanced-data-set-using-the-r-package-tidymodels/
+
+```{r}
+
+## prepare model recipe
+rf <- rand_forest(trees = 10) %>% 
+  set_engine("ranger", num.threads=3, seed = 123) %>%
+  set_mode("classification")
+
+rf_rec <- recipe(class ~ ., data = qsar_train) 
+#%>%
+#  update_role(class, new_role = "ID")
+
+rf_wf <- workflow() %>% 
+  add_model(rf) %>% 
+  add_recipe(rf_rec)
+
+prep <- prep(rf_rec)
+juiced <- juice(prep)
+
+data_qsar <- data_qsar |>
+  mutate(class = as_factor(class))
+
+qsar_test <- qsar_test |>
+  mutate(class = as_factor(class))
+
+qsar_train <- qsar_train |>
+  mutate(class = as_factor(class))
+
+set.seed(1)
+
+## fit model
+model_rf <- rf_wf %>% 
+  fit(data = qsar_train)
+
+## see model metrics
+
+model_rf %>% extract_fit_parsnip()
+predict(model_rf, qsar_test)
+
+
+## Model eval
+model_rf %>% 
+  predict( new_data = qsar_test) %>% 
+  bind_cols(qsar_test["class"]) %>% 
+  accuracy(truth= as.factor(class), .pred_class) 
+
+## confusion matrix
+caret::confusionMatrix(
+  as.factor(qsar_test$class), 
+  predict(model_rf, new_data = qsar_test)$.pred_class)
+
+bind_cols(
+    predict(model_rf, qsar_test),
+    predict(model_rf, qsar_test, type = "prob"),
+    qsar_test[,1]
+  ) -> predictions
+
+```
+ see also: https://www.kirenz.com/post/2021-02-17-r-classification-tidymodels/#random-forest
+
+## Tune the model
+
+Above we arbitrarily chose trees = 10, this is called a hyperparameter. We can more structurally tune our model when we do a grid search for the optimal hyperparameters
+
+other hyperparamters for RF
+
+```{r}
+
+```
+
+## EXERCISE 5.2
+
+ 1. In the folder `./data/lesson5/qsar` a related metadata file to the dataset you just downloaded are stored as `ID.txt`. Open that file in R and join the data with the `data_qsar` tibble.
+ 
+```{r}
+```
  
  
 
