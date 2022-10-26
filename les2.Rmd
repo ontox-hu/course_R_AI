@@ -1,4 +1,6 @@
-# Lesson 2 - Data types and structures in R
+# Lesson 2 - importing data and visualisations
+
+..and some statistics for good measure.
 
 ```{r include=FALSE}
 load("course_urls.RData")
