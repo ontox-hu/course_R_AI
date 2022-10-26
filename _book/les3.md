@@ -4,13 +4,15 @@
 
 <img src="images/03_01_tidy.jpg" width="50%" style="display: block; margin: auto;" />
 
+## Contents day 3
+
+ - data wrangling
+ 
 ## Learning objectives
 
 After this lesson:
 
-- You can import data into the R environment
-- You know how to inspect your data
-- You can make your data "tidy"
+- 
 
 ## Importing text files
 

@@ -4,6 +4,14 @@
 
 <img src="images/04_1_ggplot.png" width="50%" style="display: block; margin: auto;" />
 
+
+DAY 4:
+Functional programming
+Writing functions
+DAY 5:
+Machine Learning with {tidymodels}
+Deep Learning with tensorflow for R
+
 ## Learning objectives
 
 After this lesson:

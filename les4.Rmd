@@ -9,18 +9,20 @@ les <- 4
 knitr::include_graphics("images/04_1_ggplot.png")
 ```
 
+
+DAY 4:
+Functional programming
+Writing functions
+DAY 5:
+Machine Learning with {tidymodels}
+Deep Learning with tensorflow for R
+
 ## Learning objectives
 
 After this lesson:
 
-- You will have a basic understanding of different graph types and when to use them.
-- You can visualize categorical data with ggplot.
-- You can visualize continuous data with ggplot.
-- You can summarize data using boxplots.
-- you can perform the most common statistical tests with R.
+- You will XXX
 
-
-note: if your data is not in a folder /data/, just ignore that part of the path name!
 
 ## Difference Questions
 

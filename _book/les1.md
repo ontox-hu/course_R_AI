@@ -6,16 +6,12 @@
 
 ![](images/01_1_rstudiologo.png)
 
-## Learning objectives
+## Contents day 1
 
-After this lesson:
-
-- you know how RStudio is organized;
-- you can run R scripts in RStudio using R scripts;
-- you know how to use R packages;
-- and you know how you can find information (help function and vignettes) about the R functions you are using. 
-- You will know the different data types and structures in R. 
-- You can create your own R objects. 
+ - Intro to R and RStudio
+ - </mark>Getting the materials from Github XXX</mark>
+ - R-syntax, objects, data types and classes
+ - RMarkdown
 
 
 **Make sure you code along with the examples.** Try to replicate what the reader is doing!
@@ -25,6 +21,8 @@ After this lesson:
  - **In the preparation for this course, you made a project. Open this project.**
 
 <img src="images/01_10_Open_Project_1.jpg" width="60%" />
+
+**Do you have _some_ coding experience? You will probably know vectors and basic console use then. Skip to [the section on more complicated data structures (click)](#secondstart)**
 
 ### Running code in Rstudio
 
@@ -845,7 +843,7 @@ sum(vector_with_na, na.rm = TRUE)
 ## [1] 55
 ```
 
-## More complicated data
+## More complicated data {#secondstart}
 Usually, our datasets are more complicated than just a vector. 
 
 ## Lists 
