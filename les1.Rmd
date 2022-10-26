@@ -1231,6 +1231,10 @@ You can calculate the Akaike’s information criterion and the residual variance
 mselect(model.LL3, fctList = list(W2.4()), linreg=TRUE) 
 ```
 
+<div class="tip">
+Tip: If R is absolutely refusing to cooperate, make sure you defined your variables correctly as categorical (factor), numbers or text.
+</div>
+
 ## scripts and Rmarkdown
 
 So far, we have run a lot of code in the console. Or perhaps you used a script to save some commands. Usually though, you will be working on a specific dataset, rather than playing around with course material. To save all the steps for a specific analysis, you can save your code in a script, or in a markdown file.
