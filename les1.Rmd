@@ -5,6 +5,10 @@ load("course_urls.RData")
 les<-1
 ```
 
+```{r include=FALSE}
+library(tidyverse)
+library(drc)
+```
 
 ![](images/01_1_rstudiologo.png)
 
@@ -479,38 +483,38 @@ Quite often, you will want to use a subset of a vector for further analysis. You
 long_vector <- c(1:15,5,6,5,6)
 long_vector
 
-# Positional indexing: Display the second to fifth element of lange_vector
+# Positional indexing: Display the second to fifth element of long_vector
 long_vector[2:5]
 
-# Take the sum of the second to fifth element of lange_vector
+# Take the sum of the second to fifth element of long_vector
 sum(long_vector[2:5])
 
 # Positional indexing: Display element 2, 6 and 8 of the built-in object letters
 letters[c(2,6,8)]  
 
-# function: Display the last element in lange_vector
-lange_vector[length(lange_vector)]
+# function: Display the last element in long_vector
+long_vector[length(long_vector)]
 
-# Logical: Display the elements in lange_vector that are equal to 5
-lange_vector[lange_vector==5]
+# Logical: Display the elements in long_vector that are equal to 5
+long_vector[long_vector==5]
 ```
 
 <!-- <div class="question"> -->
 <!-- ##### Exercise `r les` {-}  -->
 
-<!-- Write R code to select the 3rd item from lange_vector.  -->
+<!-- Write R code to select the 3rd item from long_vector.  -->
 
-<!-- And write a line to select the second-last item from lange_vector.  -->
+<!-- And write a line to select the second-last item from long_vector.  -->
 
 <!-- </div> -->
 
 <!-- <details><summary>Click for the answer</summary> -->
 <!-- ```{r} -->
-<!-- lange_vector <- c(1:15,5,6,5,6) -->
-<!-- # third element of lange_vector -->
-<!-- lange_vector[3] -->
-<!-- # second-last of lange_vector -->
-<!-- lange_vector[length(lange_vector)-1] -->
+<!-- long_vector <- c(1:15,5,6,5,6) -->
+<!-- # third element of long_vector -->
+<!-- long_vector[3] -->
+<!-- # second-last of long_vector -->
+<!-- long_vector[length(long_vector)-1] -->
 <!-- ``` -->
 <!-- </details> -->
 
@@ -1074,6 +1078,72 @@ flu_month %>% count(month)
 
 The months are now in the right order. Note that October is omitted because no values were recorded for this month. 
 
+<div class="question">
+##### Exercise `r les` {-} 
+
+Use the built-in dataset gss_cat from the forcats package to answer the following questions. gss_cat is a sample of data from the General Social Survey, which is a long-running US survey conducted by the independent research organization NORC at the University of Chicago.
+
+(a) Which variables are factors?
+(b) What are the levels of the "marital" variable?
+</div>
+
+<details><summary>Click for the answer</summary>
+
+(a)
+```{r}
+library(forcats)
+gss_cat
+```
+(b)
+```{r}
+levels(gss_cat$marital)
+```
+</details>
+
+<div class="question">
+##### Exercise `r les` {-} 
+
+Run this code in R to create a tibble with categorical data:
+
+```{r}
+marital_status <- readRDS("data/lesson2/lesson2_exercise_8.2.rds")
+```
+
+The levels of this dataset are: "No answer", "Never married", "Separated", "Divorced", "Widowed" and "Married". Use this dataset and the levels to answer the following questions.
+
+(a) Search for data values that are not in the level list.
+(b) Correct the misspellings using fct_collapse() from the forcats package. 
+(c) How many data values are in each of the categorical levels?
+</div>
+
+<details><summary>Click for the answer</summary>
+
+(a)
+```{r}
+marital_levels <- c("No answer", "Never married", "Separated", "Divorced", "Widowed", "Married")
+parse_factor(marital_status$marital, levels = marital_levels)
+```
+(b)
+```{r}
+marital_status$marital[1001] <- c("Divorced")
+marital_status$marital[5001] <- c("Married")
+marital_status$marital[10001] <- c("Never married")
+```
+(c)
+```{r}
+marital_status %>% count(marital)
+```
+</details>
+
+<div class="tip">
+Always think about the variables in your dataset. Are they categorical, continuous or discrete? Let's say we test different variables in the people in this class:
+
+ - **continuous variables**: numeric variables that can have any value between any two values. Examples: the hair length (can be anything from 0 to let's say 400 cm, including for instance 15,36791 cm.), body temperature, pH of a magic potion.
+ - **discrete variables**: also numbers, but these numbers can't be anything between certain limits. They have discrete options. Typically, this is count data, but not always. For instance: the number of people wearing blue shirts (can be 3, 5 or 8, but can't be 5,36791 or 2,6), the result of rolling a die.
+ - **categorical variables**: contain a finite number of categories or distinct groups. For instance, eye colour (blue, brown, green, grey, etc), home town (Utrecht, Amsterdam, Zuidlaren, etc), marital status (married, unmarried).
+
+When you are working with a categorical variable, do store it as a factor! R will then recognise it being categorical, and handle it as such when doing calculations or making plots. 
+</div>
 
 
 ## using functions: drc
@@ -1142,9 +1212,10 @@ ED(model, c(10,20,50), interval="delta")
 
 Of course, you can compare different models (see `getMeanFunctions()` for a complete list). for instance:
 
-```{r}
-# W2.3: a weibull type 2 function with 4 parameters
 
+```{r}
+toxdata <- ryegrass
+# W2.3: a weibull type 2 function with 4 parameters
 model.W24 <-  drm(rootl~conc, data=toxdata, fct=W2.4(names = c("Slope", "Lower Limit", "Upper Limit", "ED50")))
 
 
@@ -1152,7 +1223,7 @@ model.W24 <-  drm(rootl~conc, data=toxdata, fct=W2.4(names = c("Slope", "Lower L
 # (3 parameters means fixing the lower limit at zero. Which makes sense as rootlength can't be negative)
 model.LL3 <-  drm(rootl~conc, data=ryegrass, fct=LL.3(names = c("Slope", "Upper Limit", "ED50")))
 
-plot(model.LL4, broken = TRUE, xlab="Concentration", ylab="Percent Response", type='all',lty=1, lwd=2)
+plot(model.LL3, broken = TRUE, xlab="Concentration", ylab="Percent Response", type='all',lty=1, lwd=2)
 plot(model.W24, add=TRUE,col="orange",lty=1, lwd=2)
 ```
 

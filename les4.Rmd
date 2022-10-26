@@ -19,7 +19,6 @@ After this lesson:
 - You can summarize data using boxplots.
 - you can perform the most common statistical tests with R.
 
-Note: this lesson assumes that youo have followed previous courses on statistics. We know you did, as we were teaching them! If you forgot all about them, please revisit BID and/or EV1V ([click for online reader](`r ev1vurl`))
 
 note: if your data is not in a folder /data/, just ignore that part of the path name!
 
@@ -277,8 +276,7 @@ flipper_summary %>%
 
 Often, bar graphs are used to visualise possible **differences** between samples (e.g. between groups, conditions, etc). Generally, we then have a **categorical variable on the x-axis** (such as penguin species), and a **continuous variable on the y-axis** (such as flipper length in mm.).
 
-But as you have learned previously in statistics courses, you will have to do some statistics before we can confidently proclaim we see any differences between the conditions.   
-(If you completely forgot what a t-test is, please refresh your memory [here]((`r ev1vurl`).)
+But obviously you will have to do some statistics before we can confidently proclaim we see any differences between the conditions.   
 
 Before running a t-test in R we need to know:
 
