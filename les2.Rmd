@@ -1312,13 +1312,11 @@ ggplot(data = trem_line_mean_sd, aes(x = conc_nM, y = mean)) +
 
 ### Boxplots
 
-A **boxplot** (box and whisker plot) is a graph that shows the spread of quantitative data based on quartiles and outliers (see figure below). Quartiles are just the datapoints, devided in 4 sections of equal amounts of datapoint. So the upper value of the lowest 25% of datapoints is the 25th percentile. The upper value of the lowest 50% of datapoints is the median. The upper value of the lowest 75% of datapoints is the 75th percentile.
+A **boxplot** (box and whisker plot) is a graph that shows the spread of quantitative data based on quartiles and outliers (see figure below). Boxplots may differ a bit in what the wiskers represent. ggplot calculates the Interquartile range (IQR). The upper whisker (vertical stripe) extends from the hinge (the box) to the largest value no further than 1.5 * IQR from the hinge. So  1.5 * IQR above the 75th percentile on top, and  1.5 * IQR below the 25th percentile on the bottom.
 
-```{r echo=FALSE, message=FALSE, out.width = "50%", fig.align = "center", fig.cap = "Interpretation of a boxplot. IQR = Inter Quartile Range."}
+```{r echo=FALSE, message=FALSE, out.width = "50%", fig.align = "center", fig.cap = "Interpretation of a boxplot made in ggplot. IQR = Inter Quartile Range."}
 knitr::include_graphics("images/04_2_boxplot.jpg")
 ```
-
-Now R calculates the difference between the 75th percentile and the 25th percentile. This is the Interquartile range (IQR). The upper whisker (vertical stripe) extends from the hinge (the box) to the largest value no further than 1.5 * IQR from the hinge. So  1.5 * IQR above the 75th percentile on top, and  1.5 * IQR below the 25th percentile on the bottom.
 
 To create a boxplot, we can use the function `geom_boxplot()`. We will use the `airquality` dataset which is built-in in R and contains daily air quality measurements in New York, May to September 1973. The variable "Ozone" contains mean ozone concentration in parts per billion from 13:00 to 15:00 hours at Roosevelt Island. 
 

@@ -38,6 +38,10 @@ vignettes/*.pdf
 # R Environment Variables
 .Renviron
 .Rproj.user
-
+_bookdown_files
+_book
+.unpublished
+.old
+_main.Rmd
 # temp mac files
 .DS_Store
