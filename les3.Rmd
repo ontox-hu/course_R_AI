@@ -1,4 +1,4 @@
-# Lesson 3 - Importing data & tidy data
+# Lesson 3 - Data wrangling
 
 ```{r include=FALSE}
 load("course_urls.RData")

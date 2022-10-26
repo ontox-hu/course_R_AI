@@ -1,4 +1,4 @@
-# Lesson 4 - Answering research questions
+# Lesson 4 - Functions
 
 ```{r include=FALSE}
 load("course_urls.RData")
