@@ -9,16 +9,13 @@ les <- 4
 knitr::include_graphics("images/04_1_ggplot.png")
 ```
 
+## Contents day 4
 
-DAY 4:
-Functional programming
-Writing functions
-DAY 5:
-Machine Learning with {tidymodels}
-Deep Learning with tensorflow for R
+ - Functional programming
+ - Writing functions
 
 ## Learning objectives
 
 After this lesson:
 
-- You will XXX
+...
