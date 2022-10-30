@@ -890,6 +890,7 @@ flipper_summary %>%
   theme(legend.position = "none", text = element_text(size=16)) # legend is not needed
 ```
 
+stat="identity"
 
 ### Two sample t-tests
 This isn't really a statistics course, we asume you are all familiar with the most common frequentist methods. We will show how to perform some common workflows in R.
