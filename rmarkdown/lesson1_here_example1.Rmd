@@ -1,0 +1,5 @@
+```{r }
+getwd()
+object1 <- read_csv("alyanne/data/lesson3/heights.csv")
+head(object1, n=2)
+```

@@ -1,0 +1,23 @@
+---
+title: "Lesson8_flights_table"
+author: "Chris van Oevelen"
+date: "3-11-2019"
+output: html_document
+---
+
+```{r setup}
+library(nycflights13)
+library(tidyverse)
+flights_select <- flights %>% select(year, month, day, carrier, flight, tailnum)
+```
+
+```{r table1}
+head(flights_select)
+```
+
+```{r table2}
+knitr::kable(
+  head(flights_select), 
+  caption = "Table1: a table with a different lay-out."
+)
+```
