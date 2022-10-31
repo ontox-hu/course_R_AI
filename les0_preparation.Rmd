@@ -16,7 +16,7 @@ load("course_urls.RData")
 RStudio is a nice [IDE](https://en.wikipedia.org/wiki/Integrated_development_environment) for using R, with a user-friendly interface and lots of options.
 
 
-In preparation of DAUR2, we are going to install RStudio (and first R itself!) on your own computer, so it is readily available to you at any time within and after this course. R and RStudio are both free and [open source](https://en.wikipedia.org/wiki/Open_source). We encourage you to keep using R for future projects, internships and your everyday data issues. It is currently an important tool in data science and bioinformatics (and looks rather nice on your resume).
+In preparation of this course, we are going to install RStudio (and first R itself!) on your own computer, so it is readily available to you at any time within and after this course. R and RStudio are both free and [open source](https://en.wikipedia.org/wiki/Open_source). We encourage you to keep using R for future projects and your everyday data issues. It is currently an important tool in statistics, data science and bioinformatics.
 
 Getting it all set up can be a bit tricky at times, so please follow the instructions carefully and in the correct order (seriously, keep to the order as well, it will make your life easier). The instructions will walk you through it.
 
@@ -100,6 +100,8 @@ knitr::include_graphics("images/rwin_download.png")
 ```{r , echo=FALSE, message=FALSE, out.width = "70%"}
 knitr::include_graphics("images/wizardRwindows.png")
 ```
+
+3. Windows users will also need to install [the R build tools](https://cran.r-project.org/bin/windows/Rtools/rtools42/rtools.html)
 
 
 ### Mac 
