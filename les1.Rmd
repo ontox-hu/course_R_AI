@@ -178,7 +178,7 @@ R has many build in functions, but you add more by writing them yourself (we won
 A package needs to be loaded in R though, by the function `library()`. 
 
 <div class="tip">
-A package only needs to be installed once but needs to be loaded every time you have closed Rstudio on the server.
+A package only needs to be installed once but needs to be loaded every time you have closed Rstudio.
 
 Start all our scripts with loading the packages you are going to use.
 </div>
@@ -1109,7 +1109,13 @@ levels(gss_cat$marital)
 
 Run this code in R to create a tibble with categorical data:
 
-```{r}
+(Make sure your .rds file is in a folder named "data" in your working directory. If you are working in a project, this will be the project folder containing the .rproj file. If it doesn't work, ask a teacher!)
+
+```{r, eval=F}
+marital_status <- readRDS("data/lesson1_exercise_8.2.rds")
+```
+
+```{r, include=F}
 marital_status <- readRDS("data/lesson2/lesson2_exercise_8.2.rds")
 ```
 
@@ -1240,6 +1246,8 @@ mselect(model.LL3, fctList = list(W2.4()), linreg=TRUE)
 
 ## scripts and Rmarkdown
 
+First of all, download some data for the first lessons [here](/data/alldatafirstlessons.zip). And some example Rmarkdown files [here](/rmarkdown/markdownexamples.zip).
+
 So far, we have run a lot of code in the console. Or perhaps you used a script to save some commands. Usually though, you will be working on a specific dataset, rather than playing around with course material. To save all the steps for a specific analysis, you can save your code in a script, or in a markdown file.
 
 ### scripts
@@ -1312,6 +1320,8 @@ Although here we focus on R code, RMarkdown documents can also integrate Python,
 
 Let's start with a simple RMarkdown document to examplify the concept of RMarkdown:
 
+Download the course data for the first lessons by clicking here 
+
 To open an existing RMarkdown file, perform the following steps:
 
 (1) Click on *file > Open File*.
@@ -1380,7 +1390,7 @@ Within the {r} header, you can optionally provide a name of the header. In the e
 knitr::include_graphics("images/07_5_screenshot.jpg")
 ```
 
-Another use of named chunks is to save figures. If a chunk creates a figure, the figure can also be saved separately on your server. This option will be discussed in the next section.
+Another use of named chunks is to save figures. If a chunk creates a figure, the figure can also be saved separately. This option will be discussed in the next section.
 
 ## Output control
 
@@ -1430,7 +1440,7 @@ warning = FALSE |	**yes** |	**yes** |	**yes** |	**yes** |	**yes** |	no
 (a) Modify RMarkdown file **lesson1_example1.Rmd** to only show the figure in the output file.
 (b) Modify RMarkdown file **lesson1_example1.Rmd** to only show the chunk code in the output file (not the output of the chunks).
 
-Save the Rmd files as **lesson1_exercise_1a.Rmd** and **lesson1_exercise_1b.Rmd** respectively in the server folder **daur/rmarkdown**.
+Save the Rmd files as **lesson1_exercise_1a.Rmd** and **lesson1_exercise_1b.Rmd** respectively .
 </div>
 
 <details><summary>Click for the answer</summary>
@@ -1469,9 +1479,9 @@ There are also several options for dealing with figure output and layout:
 Modify RMarkdown file lesson1_example1.Rmd to:
 
 - Show only the plain text.
-- Save the figure in a separate file stored in the server folder daur/rmarkdown/figures.
+- Save the figure in a separate file in a folder /figures.
 
-Save the Rmd files as **lesson1_exercise_2a.Rmd** and **lesson1_exercise_2b.Rmd** respectively in the server folder **daur/rmarkdown**
+Save the Rmd files as **lesson1_exercise_2a.Rmd** and **lesson1_exercise_2b.Rmd** respectively **
 </div>
 
 <details><summary>Click for the answer</summary>
@@ -1525,7 +1535,7 @@ Modify RMarkdown document **lesson1_exercise_3.Rmd** to include:
 - Plain text describing the source of the dataset. Write the package name in italics and the name of the dataset in bold.
 - the sentence: "the infant mortality has dropped from ' [R code showing the max infant_mortality in 1960] ' in 1960 to ' [R code showing max infant_mortality in 2015] ' in 2015." NB: the parts between square brackets is R code you have to include; this R code will be evaluated within the plain text section after rendering the output file.
 
-Save the RMarkdown file in the server folder **daur/rmarkdown** as **lesson1_exercise_4.Rmd**.
+Save the RMarkdown file as **lesson1_exercise_4.Rmd**.
 </div>
 
 <details><summary>Click for the answer</summary>
@@ -1538,12 +1548,12 @@ cat(htmltools::includeText("rmarkdown/lesson1_exerciseAnswer2.Rmd"))
 
 ## Here package
 
-To exemplify the idea of RMarkdown we have used a built-in dataset to show the different display options of code and output. However, most often you will refer to datasets or scripts in your RMarkdown file that are stored on the server. This will cause a problem because RMarkdown and knit will not search for files in the project folder but instead in the folder were the RMarkdown file is stored. To solve this problem we will make use of the "here" package.
+To exemplify the idea of RMarkdown we have used a built-in dataset to show the different display options of code and output. However, most often you will refer to datasets or scripts in your RMarkdown file that are stored on a server or on your computer. This will cause a problem because RMarkdown and knit will not search for files in the project folder but instead in the folder were the RMarkdown file is stored. To solve this problem we will make use of the "here" package.
 
-In the beginning of this course we have created an Rproject and before each session you should open the Rproject you are working on. Within the project folder (in this case **daur**) you organize your data files, scripts files, RMarkdown files and output files in different folders (see figure below). By using an Rproject you are guaranteed that when executing R code / scripts from the server folder **scripts**, all of your (data) files are read in properly. This is because by definition, within your Rproject environment, R will set the working directory to the project folder and start looking for folders and files relative from the Rproject folder (the folder that contains the .Rproj file, in this case the daur folder).
+In the beginning of this course we have created an Rproject and before each session you should open the Rproject you are working on. Within the project folder (in this case **daur**) you organize your data files, scripts files, RMarkdown files and output files in different folders (see figure below). By using an Rproject you are guaranteed that when executing R code / scripts, all of your (data) files are read in properly. This is because by definition, within your Rproject environment, R will set the working directory to the project folder and start looking for folders and files relative from the Rproject folder (the folder that contains the .Rproj file, in this case the daur folder).
 
 
-```{r echo=FALSE, message=FALSE, out.width = "50%", fig.align = "center", fig.cap = "Data organisation on the server. Always create an Rproject to do data analysis."}
+```{r echo=FALSE, message=FALSE, out.width = "50%", fig.align = "center", fig.cap = "Data organisation on a server. Always create an Rproject to do data analysis."}
 knitr::include_graphics("images/07_6_screenshot.jpg")
 ```
 
@@ -1553,7 +1563,7 @@ For example, you source (execute) a script from the **scripts** folder and this 
 
 ###### Example
 
-Open via Rstudio the RMarkdown file **lesson1_here_example1.Rmd** present in server folder **daur/rmarkdown**. The file contains the following RMarkdown code:
+Open via Rstudio the RMarkdown file **lesson1_here_example1.Rmd** . The file contains the following RMarkdown code:
 
 ```{r echo = FALSE, comment = ""}
 cat(htmltools::includeText("rmarkdown/lesson1_example5.Rmd"))
@@ -1565,13 +1575,15 @@ Click on the knit button to render the output file. You will get the following e
 knitr::include_graphics("images/07_7_screenshot.JPG")
 ```
 
-You notice that the current working directory is set to the **rmarkdown** folder. RMarkdown start looking for folder "data/lesson2/heights.csv" in this folder but can not find it. It throws an error and exits the knitting process.
+You notice that the current working directory is set to the **rmarkdown** folder. RMarkdown start looking for folder "heights.csv" in some "hard coded" folder (i.e. I typed out the whole (example) location) but can not find it. It throws an error and exits the knitting process.
 
-To change the default behaviour of RMarkdown, we will use the **here** package. The **here** package recreates a file path to the Rproject folder. The **here** package is already installed on the server.
+To change the default behaviour of RMarkdown, we will use the **here** package. The **here** package recreates a file path to the Rproject folder. 
+
+Install the package by typing `install.packages("here")` in the console.
 
 ###### Example
 
-In Rstudio, open the RMarkdown file **lesson1_here_example2.Rmd** present in server folder **daur/rmarkdown**. The markdown file contains the following RMarkdown code:
+In Rstudio, open the RMarkdown file **lesson1_here_example2.Rmd**. The markdown file contains the following RMarkdown code:
 
 ```{r echo = FALSE, comment = ""}
 cat(htmltools::includeText("rmarkdown/lesson1_example6.Rmd"))
@@ -1592,7 +1604,7 @@ Write an RMarkdown document. The RMarkdown document should contain:
 - Plain text describing the source of the dataset.
 - Chunks containing R code to create a table of the highest expressed genes after 48h.
 
-The RMarkdown output file only contains the table. Save the RMarkdown file in the server folder **daur/rmarkdown** as **lesson1_exercise_5.Rmd**.
+The RMarkdown output file only contains the table. Save the RMarkdown file as **lesson1_exercise_5.Rmd**.
 </div>
 
 <details><summary>Click for the answer</summary>
@@ -1627,7 +1639,7 @@ knitr::include_graphics("images/07_10_screenshot.JPG")
 
 4. Remove the instructions but leave the YAML header.
 5. Start writing your RMarkdown document.
-6. Save your document in a folder called rmarkdown in your server project folder.
+6. Save your document in a folder called rmarkdown in your project folder.
 7. To render your RMarkdown document, click on the knit button.
 
 <div class="question">
