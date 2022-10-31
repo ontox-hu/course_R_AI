@@ -17,7 +17,7 @@ output:
             toc:
                 collapse: section
                 scroll_highlight: yes
-                before: <li class="toc-logo"><a href="./"><img style="float:left;" src="images/voorbeeldlogo2.png"></a> <h4 class=".paddingtitel ">Intro Into R </h2></li>
+                before: <li class="toc-logo"><a href="./"></a> <h4 class=".paddingtitel ">Intro Into R </h2></li>
 ---
 
 ```{r include = FALSE}

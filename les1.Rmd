@@ -568,7 +568,7 @@ sesamstraat_1
 sesamstraat_1[1] <- "gonzo"
 sesamstraat_1
 
-# Replace element 3 ("bert") and 4 ("ernie") with "groover" and "kermit"
+# Replace element 3 ("bert") to 4 ("ernie") with "groover" and "kermit"
 sesamstraat_1[3:4] <- c("groover", "kermit")   
 sesamstraat_1
 ```
@@ -583,24 +583,26 @@ append(sesamstraat_1, c("ernie", "ms piggy"))
 append(sesamstraat_1, c("ernie", "ms piggy"), after = 3) 
 ```
 
-<!-- To delete elements of a vector, we use the square brackets [] in combination with the minus sign (-).  -->
+To delete elements of a vector, we use the square brackets [] in combination with the minus sign (-).
 
-<!-- ```{r} -->
-<!-- sequentie <- 1:10 -->
+```{r}
+sequence1 <- 1:10
 
-<!-- # Delete the 3rd element of the vector (using minus sign) -->
-<!-- sequentie[-3] -->
+# Delete the 3rd element of the vector (using minus sign)
+sequence1[-3]
 
-<!-- sequentie1 <- seq(10, 100, 10) -->
+sequence2 <- seq(10, 100, 10)
 
-<!-- # Delete elements 6 to 10 of the vector -->
-<!-- sequentie1[-c( 6:10 )]  ## delete 6th-10th element of the vector -->
-<!-- ``` -->
+# Delete elements 6 and 10 of the vector
+sequence2[-c( 6,10 )]  
+```
 
 <div class="question">
 ##### Exercise `r les` {-} 
 
-Write R code to select the vowels from the R contant LETTERS. 
+Write R code to select the vowels from the R content LETTERS. 
+(type `LETTERS` in the console to see what is in this object.)
+
 Use `subset()` and the bolean operator '|' .
 </div>
 
@@ -1076,6 +1078,10 @@ flu_month %>% count(month)
 
 The months are now in the right order. Note that October is omitted because no values were recorded for this month. 
 
+<div class="tip">
+Tip: If R is absolutely refusing to cooperate, make sure you defined your variables correctly as categorical (factor), numbers or text.
+</div>
+
 <div class="question">
 ##### Exercise `r les` {-} 
 
@@ -1231,9 +1237,6 @@ You can calculate the Akaike’s information criterion and the residual variance
 mselect(model.LL3, fctList = list(W2.4()), linreg=TRUE) 
 ```
 
-<div class="tip">
-Tip: If R is absolutely refusing to cooperate, make sure you defined your variables correctly as categorical (factor), numbers or text.
-</div>
 
 ## scripts and Rmarkdown
 
