@@ -13,11 +13,11 @@ pre {
 
 /* ---------- Links ----------------- */
 .book .book-body .page-wrapper .page-inner section.normal a {
-  color: #3f88ca;
+  color: #da521b;
 }
 
 .book .book-body .page-wrapper .page-inner section.normal a:hover {
-color: #1f5386; /* darker color when hovering */
+color: #da521b; /* darker color when hovering */
 text-decoration: none;
 }
 
@@ -36,13 +36,14 @@ text-decoration: none;
 }
 
 .summary > li:first-child {
-  height: auto !important; 
+  height: auto !important;
 }
 
 .book .book-summary {
   background: white;
   border-right: none;
 }
+
 
 #TOC {
   top: 40%;
@@ -54,21 +55,22 @@ text-decoration: none;
   color: grey;
   border-radius: 0px;
 }
-.list-group-item.active {
-    color: #69b3a2;
-    background-color: white;
-    border-left: solid;
-    border-color: #69b3a2;
-}
-.list-group-item:hover {
-    color: #69b3a2;
-    background-color: white;
-    border-left: solid;
-    border-color: #69b3a2;
-}
+
 .tocify-extend-page {
   display: none;
 }
+
+
+.book .book-summary ul.summary li.active>a {
+  color: #da521b;
+}
+
+.book .book-summary ul.summary li a:hover {
+  background-color: #ffffff;
+  color: #da521b;
+}
+
+
 
 /* ---------- Button ----------------- */
 
@@ -112,10 +114,10 @@ div.question {
 
 
  /* ----------- automatic question numbering ---------*/
-h1 { 
+h1 {
   counter-reset: h5counter;
   text-align: center;
-  
+
 }
 h5:after {
     counter-increment: h5counter;
