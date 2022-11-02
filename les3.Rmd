@@ -17,7 +17,975 @@ knitr::include_graphics("images/03_01_tidy.jpg")
 
 After this lesson:
 
-- 
+* You can select and filter variables and rows within a dataframe
+* you can create new variables based on existing variables of a dataframe
+* you can generate summaries of data
+* you can combine dataframes
+* you can view, inspect, wrangle and analyse strings;
+* you can use regular expressions (regex) to solve data analysis questions;
+
+## data wrangling
+
+After data import you want to start "playing" with the data. Usually, it needs some work before it can be plotted or analysed. The tidyverse package provides a range of tools to organise, select and create new variables to obtain new insights. 
+
+## Filtering rows
+
+We will start playing with dataset "flights". This data frame contains all 336,776 flights that departed from New York City in 2013. The data comes from the US Bureau of Transportation Statistics. The data is derived from the package nycflights13. First we need to install this package:
+
+###### Example
+
+```{r eval=FALSE}
+
+library(tidyverse)
+library(nycflights13)
+?flights                     ## description of the dataset
+```
+
+```{r include=FALSE}
+library(tidyverse)
+library(nycflights13)
+```
+
+```{r}
+is_tibble(flights)         ## check if dataframe is tibble
+
+dim(flights)               ## check dimensions of the dataset: number of rows and columns
+                             ## 336776 rows and 19 columns (=variables)
+head(flights)
+```
+
+```{r eval=FALSE}
+View(flights)             ## View data in a R studio spreadsheet showing all rows and columns
+```
+
+
+To select data rows from a dataset we will use the function `filter()`
+
+For example we are interested in the number of flights that departed on January first . 
+
+###### Example
+```{r}
+
+flights_1_1 <- flights %>% filter(month == 1, day == 1) 
+flights_1_1 %>% count()
+```
+
+To find all flights that departed on 1st or 25th of january we have to use the bolean operator **or (|)** 
+
+###### Example
+```{r}
+flights_1_1_25 <- flights %>% filter(month == 1, day == 1 | day == 25)
+flights_1_1_25 %>% count()
+```
+
+To find all flights that departed between the 10th and 25th of january we have to use the *x %in% y** operator. This will select every row where variable x is one of the values in y
+
+###### Example
+```{r}
+flights_1_between10_25 <- flights %>% filter(month == 1, day %in% c(10:25))
+flights_1_between10_25 %>% count()
+```
+
+We can also select flights that departed between 10th and 25th of january and had a departure delay of more then 30 minutes but less then 120 minutes. Here we have to use the bolean operator *and (&)** 
+
+###### Example
+```{r}
+
+flights_1_between10_25_delayed30_120 <- flights %>% 
+                        filter(month == 1, 
+                               day %in% c(10:25), 
+                               dep_delay >=30 & dep_delay <=120)
+
+# mean dep_delay of selected flights
+mean(flights_1_between10_25_delayed30_120$dep_delay)  
+```
+
+To filter for flights with missing values use the function filter() in combination is.na(). To filter for flights without missing values use the ! in front of the `is.na()` function.
+
+###### Example
+```{r}
+
+flights_NA <- flights %>% filter(is.na(dep_delay))            # select flights with missing values for dep_delay
+flights_NA %>% count()
+flights_without_NA <- flights %>% filter(!is.na(dep_delay))  # select flights without missing values for dep_delay
+flights_without_NA %>% count()
+```
+
+Very often a dataset will contain duplicate values. To filter for unique values only use the function `distinct()`. By default distinct will only return the selected variable. If you want to return all variables use the argument .keep_all = TRUE
+
+###### Example
+```{r}
+
+president <- tibble(president = c("Donald", "Barack", "George", "Bill", "George", "Ronald"),
+                    party = c("Rep", "Dem", "Rep", "Dem", "Rep", "Rep"))
+president %>% distinct(president)
+president %>% distinct(president, .keep_all = TRUE)
+```
+
+
+<div class="question">
+##### Exercise `r les` {-} 
+
+Find all flights that:
+
+(a) Had an arrival delay of two or more hours
+(b) Flew to Houston (IAH or HOU)
+(c) Were operated by United, American, or Delta
+(d) Departed in summer (July, August, and September)
+(e) Arrived more than two hours late, but didn’t leave late (within 10 minutes from the original departure time)
+(f) Were delayed by at least an hour, but made up over 30 minutes in flight
+
+</div>
+
+<details><summary>Click for the answer</summary>
+```{r}
+#(a)
+library(tidyverse)
+library(nycflights13)
+
+flights %>% filter(arr_delay >= 120) 
+
+#(b) 
+flights %>% filter(dest == "IAH" | dest == "HOU")
+
+#or 
+flights %>% filter(dest %in% c("IAH", "HOU"))
+
+#(c) 
+flights %>% filter(carrier %in% c("UA", "AA", "DL"))
+
+#or
+flights %>% filter(carrier == "UA" | carrier == "AA" | carrier == "DL")
+
+#(d)
+flights %>% filter(month %in% c(7,8,9))
+
+#(e)
+flights %>% filter(dep_delay < 10 & arr_delay > 120)
+
+#(f) 
+flights %>% filter(dep_delay > 60 & (dep_delay-arr_delay) > 30)
+```
+</details>
+
+<div class="question">
+##### Exercise `r les` {-} 
+
+If a flight has a missing (NA) dep_time, the flights has been cancelled. 
+
+How many flights between day 11 and 21 of month april, juli and december have been cancelled?
+
+</div>
+
+<details><summary>Click for the answer</summary>
+```{r}
+flights_cancelled_4712_1121 <- flights %>% filter(month %in% c(4,7,12), day %in% c(11:21), is.na(dep_time))
+flights_cancelled_4712_1121 %>% count()
+```
+</details>
+
+
+## Selecting columns
+
+The previous page described data selection based on rows. In this section we will describe:
+
+1. How to select variables by the function `select()`
+1. To demonstrate this function we will continue with the flights dataset
+
+###### Example
+```{r}
+dim(flights)           # dataset flights has 19 variables. Not all variables are shown in the OUTPUT
+colnames(flights)      # to view the variables names
+```
+
+To reduce the number of variables use `select()`.
+
+###### Example
+```{r}
+flights %>% select(year, month, day, dep_time, arr_time)  # selection of 5 variables by column name
+select(flights, year:day) # Select all columns between year and day (inclusive)
+select(flights, -(year:day))  #Select all columns except those from year to day (inclusive)
+```
+
+There are a number of helper functions you can use within `select()`
+
+* starts_with("abc"): matches names that begin with “abc”.
+
+* contains("ijk"): matches names that contain “ijk”.
+
+* ends_with("xyz"): matches names that end with “xyz”.
+
+For a complete list of [select_helpers](https://www.rdocumentation.org/packages/dplyr/versions/0.7.2/topics/select_helpers) click on the link.
+
+###### Example
+```{r}
+
+flights %>% select(year, month, day, starts_with("dep"))   # A tibble: 1 x 5 
+flights %>% select(year, month, day, contains("dep"))      # A tibble: 1 x 6
+flights %>% select(year, month, day, ends_with("time"))    # A tibble: 1 x 8
+```
+
+<div class="question">
+##### Exercise `r les` {-} 
+Use the flights dataset to answer to following questions
+
+(a) Select all variables with "time "in the variable name
+(b) Remove the last 10 variables from the flights dataset
+(c) Reverse the order of the variables: first column is "time_hour" and the lst column is "year"
+
+</div>
+
+<details><summary>Click for the answer</summary>
+```{r}
+#(a)
+
+flights %>% select(contains("time")) 
+
+#(b)
+
+flights %>% select(year:arr_delay, -(carrier:time_hour))
+
+#(c)
+
+flights %>% select(time_hour:year)
+```
+</details>
+
+## Sorting and renaming columns
+
+To sort data values of a variable use the function `arrange()`
+
+By default `arrange()` sorts in ascending order
+
+To sort in descending order use `arrange()` in combintion with `desc()`
+
+To demonstrate `arrange()` we will continue with the gapminder dataset of the dslabs package. 
+
+
+###### Example
+```{r eval=FALSE}
+
+library(dslabs)
+?gapminder      # description of the gapminder dataset
+# which country +year has lowest life expectancy 
+gapminder %>% select(country, year, life_expectancy) %>% arrange(life_expectancy) 
+```
+
+To view countries + year with the highest life_expectancy we'll have to sort in descending order
+
+
+###### Example
+```{r eval=FALSE}
+# which country +year has highest life expectancy 
+gapminder %>% select(country, year, life_expectancy) %>%                     
+              arrange(desc(life_expectancy))
+```
+
+To rename variables use the function `rename()`
+To demonstrate `rename()` we will continue with the flights dataset of the nycflights13 package. 
+
+
+###### Example
+```{r}
+flights %>% colnames()
+flights %>% rename(tail_num = tailnum) %>% colnames()   # new_name = oldname (tail_num = tailnum)
+```
+
+<div class="question">
+##### Exercise `r les` {-} 
+(a) Sort dataset **gapminder** (from the dslabs package) according to year (ascending) and life_expectancy (descending) 
+
+Use dataset **flights** to answer (b)
+
+(b) Which flight had the biggest departure delay in May. On which day?
+
+</div>
+
+<details><summary>Click for the answer</summary>
+```{r }
+#(a)
+library(dslabs)
+# head() for viewing only to prevent your screen from filling with many many rows of data..
+gapminder %>% select(country, year, life_expectancy) %>% 
+              arrange(year, desc(life_expectancy)) %>% head()
+
+
+#(b) 
+
+flights %>% select(month, day, dep_delay, flight) %>%
+            filter(month == 5) %>%
+            arrange(desc(dep_delay))
+```
+</details>
+
+<div class="question">
+##### Exercise `r les` {-} 
+Create df1 to answer question (a)
+
+df1 <- tibble("zero h" = 1:10, "three h" = 11:20, "twelve h" = seq(110, 200, by = 10))
+
+(a)  rename the column names in df1 to "zero_h", "three_h" and "twelve_h".  
+
+(b)  rename  the new column names of question (a) into 0h, 3h and 12h
+
+</div>
+
+<details><summary>Click for the answer</summary>
+```{r}
+#(a)
+df1 <- tibble("zero h" = 1:10, "three h" = 11:20, "twelve h" = seq(110, 200, by = 10))
+df1 <- df1 %>% rename(zero_h="zero h", three_h="three h", twelve_h="twelve h")
+
+#(b)
+
+df1 <- df1 %>% rename(`0h`=zero_h, `3h`=three_h, `12h`=twelve_h)
+```
+</details>
+
+
+## Creating new variables
+
+An important part of data analysis is to use existing variables (columns) to create new variables within a tibble.
+
+To create new variables based on existing variables we will use:
+
+* `mutate()`
+* `transmute()`
+
+When using `mutate()` the new variable will be *added** at the end of the tibble whereas `transmute()` will *only keep the newly created variables**.
+
+To create new variables we can make use of of a whole range of operators and functions:
+
+* Arithmetic operators: **+, -, *, /, ^**
+* Log functions: `log()`, `log2()`, `log10()`
+* Cumulative and rolling aggregates: `cumsum()`, `cumprod(`) calculate cumulative sum and product respectively
+
+###### Example
+```{r}
+
+tibble_1 <- tibble(serie1 = 1:20, serie2 = 21:40)
+colnames(tibble_1)
+tibble_2 <- tibble_1 %>% mutate(new_variable1 = serie1 * serie2,  
+                                   new_variable2 = log2(serie1), 
+                                   new_variable3 = cumsum(serie2),
+                                   new_variable4 = new_variable1 - new_variable2)  
+#  new_variable4 = new variable based on variables that were just created 
+tibble_2
+```
+
+To further demonstrate `mutate()` we will start working with dataset *ce11_gene_exp** which is saved as an R object in *data/lesson5**. This dataset contains gene expression data of all genes in C elegans (genome version 11). The dataset contains six variables:
+
+1. GeneID: name of the gene
+2. controle_1: gene expression levels in C elegans non-treated, experiment1
+3. controle_2: gene expression levels in C elegans non-treated, experiment2
+4. ba_200_1: gene expression levels in C elegans treated with BA, experiment1
+5. ba_200_2: gene expression levels in C elegans treated with BA, experiment2 
+6. length: length of the gene
+
+###### Example
+```{r}
+# import R object from server into Rstudio
+ce11_gene_exp <- readRDS("data/lesson5/ce11_gene_exp.rds")     
+head(ce11_gene_exp, n = 5)
+dim(ce11_gene_exp)  # 46778 row (=genes) and six variables
+```
+
+
+To compare gene expression levels we have to normalise:
+
+* To analyse gene expression levels between samples we have to normalise for the total number of reads: reads per million **(RPM)**
+* To analyse gene expression levels within a sample (so between genes) we have to normalise for gene length meaning dividing the RPM by gene length. This unit is called Reads Per Kilobase Million **(RPKM)**
+
+Forgotten why we'd want to do normalisation? check [this explanation](https://hbctraining.github.io/DGE_workshop/lessons/02_DGE_count_normalization.html) of the influence of Sequencing depth and Gene length on the number of reads.
+
+We will combine the two normalization steps to create the RPM and RPKM
+
+###### Example
+```{r}
+
+sum_con1 <- sum(ce11_gene_exp$controle_1) / 1000000    # total number of counts divided by 1.000.000 = normalisation factor
+sum_con2 <- sum(ce11_gene_exp$controle_2) / 1000000
+sum_ba1 <- sum(ce11_gene_exp$ba_200_1)  / 1000000
+sum_ba2 <- sum(ce11_gene_exp$ba_200_2) / 1000000       
+ce11_gene_exp_rpm_rpkm <- ce11_gene_exp %>% mutate(rpm_con1 = controle_1 / sum_con1,
+                                                    rpm_con2 = controle_2 / sum_con2,  
+                                                    rpm_ba1 = ba_200_1 / sum_ba1,
+                                                    rpm_ba2 = ba_200_2 / sum_ba2,   
+                                                    rpkm_con1 = rpm_con1 / length,  
+                                                    rpkm_con2 = rpm_con2 / length,
+                                                    rpkm_ba1 = rpm_ba1 / length,
+                                                    rpkm_ba2 = rpm_ba2 / length)
+colnames(ce11_gene_exp_rpm_rpkm)
+```
+
+We will continue with object **ce11_gene_exp_rpm_rpkm** later in this lesson, so **save you code in a script!**
+
+<div class="question">
+##### Exercise `r les` {-} 
+Use dataset **flights** to answer the questions
+
+(a) Calculate the speed in km / hour of each flight in the flights dataset
+
+(b) Which flight had the highest speed?
+
+(c) We are wondering whether there is a correlation between distance and speed. Make the graph you would plot to start investigating this. To reduce the time needed to plot this image, reduce the dataset by removing similar flights based on distance, keeping only distict flights.
+
+
+</div>
+
+<details><summary>Click for the answer</summary>
+
+#(a)
+```{r}
+
+flights_speed <- flights %>% select(month, day, carrier, flight, distance, air_time) %>%
+                            mutate(distance_km = distance * 1.609,
+                                    airtime_hr = air_time/ 60,
+                                    speed_km_hr = distance_km / airtime_hr)
+```
+
+#(b)
+```{r}
+flights_speed %>% arrange(desc(speed_km_hr))
+```
+
+#(c)
+```{r}
+# remove observations with no data value = NA
+flights_speed_na <- flights_speed %>% filter(!is.na(speed_km_hr))    
+
+#  reduce dataset by removing similar flights based on distance
+flights_speed_na_distinct <- flights_speed_na %>% distinct(distance, .keep_all = T)      
+
+flights_speed_na_distinct %>% ggplot(aes(x=distance, y=speed_km_hr)) +
+                      geom_point() +
+                      geom_smooth(se=F)
+
+```
+</details>
+
+
+## Summarizing your data
+
+An important part of data analysis is to compare experimental conditions. To compare different conditions we will have to summarize the data associated with each condition. A summary of the data can be the mean or the median to show the trend of the dataset. Another important measurement is the spread of the data values to show how reliable your measurements are.  
+
+To organise your data into groups (experimental conditions) and to make a summary report of each group we will make use of
+
+* `group_by()`
+* `summarise()`
+
+To demonstrate the use of `group_by()` combined with `summarise()` we will make use of the olive dataset from the dslabs package. Let's first inspect the olive dataset
+
+###### Example
+```{r}
+library(dslabs)
+```
+
+```{r eval = FALSE}
+?olive       # description of the olive dataset
+View(olive)
+```
+```{r}
+class(olive)
+olive_tbl <- as_tibble(olive)
+olive_tbl
+levels(olive_tbl$region)  # levels of the factor region
+```
+
+Let's say we want to know if there is a difference between the three regions in the percentage of palmitic acid in the olive oil.
+First we have to group the regions in the olive dataset. Subsequently we can calculate the **average**, the **standard deviation** and **number of datavalues** for each group **(or whatever we are interested in)**
+
+###### Example
+```{r}
+# create new object named olive_tbl_summary
+olive_tbl_summary <- olive_tbl %>% group_by(region) %>%                          
+                                 summarize(mean_palmitic = mean(palmitic, na.rm = TRUE),
+                                             stdev_palmitic =  sd(palmitic, na.rm = TRUE),
+                                            count = n())     
+
+olive_tbl_summary
+```
+
+To make a graph use the newly created variable olive_tbl_summary:
+
+###### Example
+```{r }
+
+olive_tbl_summary %>% ggplot(aes(x = region, y = mean_palmitic, fill = region))+
+                          geom_col() +
+                          geom_errorbar(aes(ymin = mean_palmitic - stdev_palmitic, 
+                          ymax = mean_palmitic + stdev_palmitic), width = 0.4)+
+                         
+  labs(title = "Average precentage palmitic acid in italian olive oil per region",
+       subtitle = "You did not forget how to add figure titles did you?",
+       caption = "there is even a caption",
+       x = "Region in Italy",
+       y = "Average precentage palmitic acid (%)") + 
+  theme_classic() + #remove the gray background if you think it is ugly 
+  theme(legend.position = "none", text = element_text(size=14)) #legend is redundant, also increase text size
+
+```
+
+
+For the next example we will continue with the **gapminder** dataset from te **dslabs** package containing health and income information of 184 countries in time. We want to compare fertility rates of the different regions of Europe in time. First we want to see how the different regions are defined by using the function `distinct()`. This funcion report unique values in a vector (removing duplicates)
+
+###### Example
+```{r }
+ ## use distinct() to return list of unique countries per region in Europe
+europe_countries <- gapminder %>% filter(continent == "Europe") %>%
+  group_by(region) %>%
+  distinct(country) %>% 
+  arrange(region)
+
+europe_countries #use view(europe_countries) to see them all
+```
+
+Note that we have 3 variables of interest here: year (x-axis), fertility (y-axis) and region (different lines). The latter is a categorical variable. We can add it to ggplot with the "group=" argument and colour the lines differently by group with the "colour=" argument:
+
+###### Example
+```{r }
+gapminder_europe <- gapminder %>% filter(continent == "Europe") %>%
+  group_by(year, region) %>%
+  summarise(mean_fertility = mean(fertility,  na.rm = TRUE),
+            sd_fertility = sd(fertility, na.rm = TRUE),
+            count_fertility = n())
+
+gapminder_europe %>% ggplot(aes(x = year, y = mean_fertility, group = region, colour = region)) +
+  geom_line() +
+  geom_point(size = 1) +
+  labs(title = "Fertility rate of 4 regions of Europe")
+
+```
+
+<div class="question">
+##### Exercise `r les` {-} 
+Use dataset gapminder form the dslabs package to answer the following questions:
+
+(a) Make a bar graph showing the median infant_mortality of the different continents in 1960 and 2015. Each year has is own separate figure. 
+
+(b) Make a graph (line + points) showing the average gdp of the different regions of the continent Africa between 1980 -2000
+
+</div>
+
+<details><summary>Click for the answer</summary>
+
+
+(a)
+```{r}
+continent_inf_mort_1960_2015 <- gapminder %>%
+  filter(year == 1960 | year ==2015) %>%
+  group_by(year, continent) %>%
+  summarize(infant_mort_median = median(infant_mortality, na.rm=TRUE))
+
+continent_inf_mort_1960_2015 %>% ggplot(aes(x = continent, y = infant_mort_median)) +
+  geom_col() +
+  facet_wrap(~ year)
+```
+(b)
+```{r}
+africa_gdp_1980_2000 <- gapminder %>% filter(year %in% c(1980:2000),
+                                             continent == "Africa") %>%
+  group_by(year, region) %>%
+  summarize(gdp_average = mean(gdp, na.rm=TRUE))
+
+africa_gdp_1980_2000 %>% ggplot(aes(x=year, y=gdp_average, group = region, color=region)) +
+  geom_point() +
+  geom_line()
+```
+</details>
+
+## Relational data part 1 {#lesjoin1}
+
+Data is often stored in multipe datasets. To answer your research questions you have to combine datasets. To relate two datasets we use the R function `left_join()`. Datasets are combined based on a *common variable containing the same (or a subset) of data values*. This is called a **key** and is defined by the `left_join()` argument by. The `left_join()` function keeps all the observations of dataset1. It looks up the key value in dataset2 and if this value exists adds all the associated data values to dataset1 for each shared key. Further explanation of joins can at paragraph "13.4.3 Outer joins" of [Chapter 13 Relational data](https://r4ds.had.co.nz/relational-data.html).
+
+`left_join()` takes three arguments:
+
+1. dataset1
+2. dataset2
+3. by: defines the shared column in dataset1 en dataset2 with the same or a subset of data values 
+
+###### Example
+```{r }
+tibble1 <- tibble(a = 1:5, abcde = letters[1:5])                                                                      
+tibble2 <- tibble(a = 1:5, klmno = letters[11:15])   # shared values between tibble1 and tibble2 is variable "a"
+tibble3 <- tibble(klmno = letters[11:15], a = 1:5, ABCDE = LETTERS[1:5])         
+tibble4 <- left_join(tibble1, tibble2, by = "a")
+tibble4
+
+tibble5 <- left_join(tibble1, tibble3, by = "a")
+tibble5
+```
+
+In the exampes above there is a one-to-one relationship between key values. However datasets can also have a one-to-many relationship:
+
+###### Example
+```{r }
+tibble6 <- tibble(sesamestreet = c("pino", "bert", "ernie", "elmo"))
+# use the rep() function to repeat vectors
+tibble7 <- tibble(sesamestreet = rep(c("pino", "bert", "ernie", "elmo"), times = 3), number=c(1:12))
+tibble8 <- left_join(tibble6, tibble7, by = "sesamestreet")
+tibble8
+```
+Each obervation in dataset1 (tibble6) has three relations with dataset2 (tibble7). After the `left_join()` the new dataset contains repeated observations!
+
+## Relational data part 2
+
+To further demonstrate the `left_join()` function we will continue with the **ce11_gene_exp_rpm_rpkm** object which was created in [earlier](#lesjoin1) . The first column of **ce11_gene_exp_rpm_rpkm** contains all ensemble genes of C. elegans
+
+###### Example
+```{r }
+head(ce11_gene_exp_rpm_rpkm$GeneID)
+```
+
+Each gene is associated with (normalised) gene expression levels and the length of the gene. If we find a set of genes that are either up- or downregulated between control and treated samples we want to know more about this subset of genes. What are the functions of those genes? 
+
+In server folder data/lesson5 is a zipped file named **mart_export.txt.gz** . This file is tab separated file and contains ensemble genes of C. elegans and associated [gene ontology](http://geneontology.org/) descriptions. First we have to import this file into the Rstudio environment and inspect its contents.
+
+###### Example
+```{r }
+
+ce11_biomart <- read_tsv(file = "data/lesson5/mart_export.txt.gz") #read_function() can directly import zipped files!
+dim(ce11_biomart)
+
+# View(ce11_biomart) # use view to view the whole dataset
+```
+
+To trim the dataset ce11_biomart we make a selection of columns that are most useful for the analysis. In addition we will rename the columns.
+
+###### Example
+```{r }
+ce11_biomart_GO <- ce11_biomart %>% select("Gene stable ID", contains("GO"))
+ce11_biomart_GO <- ce11_biomart_GO %>% rename(GeneID = "Gene stable ID",
+                                              GO_accession = "GO term accession",
+                                              GO_name = "GO term name",
+                                              GO_definition = "GO term definition",
+                                              GO_evidence_code = "GO term evidence code",
+                                              GO_domain = "GO domain")
+colnames(ce11_biomart_GO)
+```
+
+
+To combine the two datasets we use the GeneID as the key
+
+###### Example
+```{r }
+dim(ce11_gene_exp_rpm_rpkm)
+dim(ce11_biomart_GO)
+
+ce11_gene_exp_go <- left_join(ce11_gene_exp_rpm_rpkm, ce11_biomart_GO, by = "GeneID")
+dim(ce11_gene_exp_go)
+```
+
+<div class="question">
+##### Exercise `r les` {-} 
+A researcher is using a luciferase reporter assay to study the effect of 8 chemicals in 4 different concentration (in triplo) on the activity of the reporter gene. The data is listed in Excel file **screening.xlsx** in the folder data/lesson5. The file contains two data sheets. One sheet contains the experimental set-up. The second sheet contains the actual data in a 96 wells plate layout
+
+(a)  Import  both sheets of file screening.xlsx into Rstudio as separate  R object. 
+
+(b)  Make the data of sheet2 tidy
+
+(c)  Combine the two datasets into 1 tibble
+
+ 
+</div>
+
+<details><summary>Click for the answer</summary>
+
+
+(a)
+```{r}
+library(tidyverse)
+library(readxl)
+
+excel_sheets("data/lesson5/screening.xlsx")
+screening_experiment <- read_excel("data/lesson5/screening.xlsx", sheet="experiment")
+screening_data <- read_excel("data/lesson5/screening.xlsx", sheet="data")
+head(screening_experiment) #use view() to inspect all the data
+head(screening_data)
+```
+(b)
+```{r}
+screening_data_tidy <- screening_data %>% 
+  pivot_longer(cols = c("nr1","nr2","nr3","nr4","nr5","nr6","nr7","nr8","nr9","nr10","nr11","nr12"),
+               names_to = "well_column", values_to = "measurement")
+screening_data_tidy <- screening_data_tidy %>% rename(well_row = "...1") %>%
+arrange(well_row)
+```
+
+(c)
+```{r}
+screening_join <- left_join(screening_experiment, screening_data_tidy, by=c("well_row", "well_column") )
+```
+</details>
+
+
+
+## Introduction to string manipulation
+
+When analyzing data, you often have to manipulate strings (a sequence of characters). String manipulation is especially important for biological data analysis, because biological information is stored in sequences/strings: DNA, RNA and protein sequences. 
+
+There are many packages and functions to deal with string analysis. An important package is the **stringr** package. A summary of stringr functions can be found in this [cheatsheet](https://github.com/rstudio/cheatsheets/blob/master/strings.pdf). Note that many other cheatsheets can be found on the [RStudio website](https://rstudio.com/resources/cheatsheets/).
+
+In this lesson, we will look at the different **stringr** functions. In addition, we will introduce you to **regular expressions**. In the different sections of this lesson, we will show several applications of string manipulation to biological sequences/DNA. 
+
+## stringr (part 1)
+
+To analyse and manipulate strings, we will make use of functions from the **stringr** package, which is included in the **tidyverse** package. So, before we start, we have to load the **tidyverse** package.
+
+```{r message = FALSE}
+library(tidyverse)
+```
+
+If you have a string, you may want to know number of characters it has. You can find out using the function `str_length()`. Because this function is vectorized (like most R functions), it also accepts vectors containing several strings. Hence, you can also determine the number of characters in each string of the vector. 
+
+###### Examples
+
+```{r}
+# Create example string
+dna_1 <- "ACTTGAAGGT"
+
+# Count the number of characters of the string
+str_length("ACTTGAAGGT") 
+
+# Create a vector with three DNA sequences
+dna_sequences <- c("ACTTGAAGGT", 
+                   "CCTAAGGTAGTA", 
+                   "TTTAAGGCG") 
+
+# Check the number of elements in the vector
+length(dna_sequences) 
+
+# Count the number of characters of the different strings in the vector
+str_length(dna_sequences) 
+```
+
+You can also easily combine several strings into one string, using the function `str_c()`.
+
+###### Examples
+
+```{r}
+# Combine strings without space
+combined_sequence <- str_c("ACTTGAAGGT", "CCTAAGGTAGTA", sep = "") 
+combined_sequence
+```
+
+<div class="question">
+##### Exercise `r les` {-} 
+
+Create individual character vectors of the following strings:
+
+- The name of the compoun(d) "Thalidomide";
+- The SMILES (Simplified Molecular Input Line Entry System) of the substance Thalidomide: "C1CC(=O)NC(=O)C1N2C(=O)C3=CC=CC=C3C2=O";
+- The molecular structure of Thalidomide: "C13H10N2O4";
+- and the CAS number of Thaslidomide: "50-35-1".
+</div>
+
+<details><summary>Click for the answer</summary>
+```{r}
+name <- "Thalidomide"
+smiles <- "C1CC(=O)NC(=O)C1N2C(=O)C3=CC=CC=C3C2=O"
+mol_struc <- "C13H10N2O4"
+cas <- "50-35-1"
+```
+</details>
+
+<div class="question">
+##### Exercise `r les` {-} 
+
+Combine the individual strings from the previous exercise using the following three different methods:
+
+- `paste()`
+- `c()`
+- `str_c()`
+
+Describe the differences between the methods.
+</div>
+
+<details><summary>Click for the answer</summary>
+```{r}
+# Combine strings to one string separated with spaces
+paste(name, smiles, mol_struc, cas) 
+
+# Combine strings into vector with different elements
+c(name, smiles, mol_struc, cas) 
+
+# Combine strings to one string separated with spaces
+str_c(name, smiles, mol_struc, cas, sep = " ")
+```
+</details>
+
+<div class="question">
+##### Exercise `r les` {-} 
+
+(a) Use c() and str_c() to combine the Thalidomide information in a character vector with 5 elements containing the information above in each element. Append each element in this vector with the string "THALIDOMIDE_"
+
+(b) The resulting character vector can be converted into a dataframe using the function `enframe()`. Read the help page for this function. Create a dataframe of the output vector of 6.3a with `enframe()` and see how it looks like.
+
+(c) The dataframe of (b) contains a column 'value'. We want to split this column into two columns, 'compound' and 'info'. Use the function `separate()` from the **tidyr** package to split the column by the "_". 
+</div>
+
+<details><summary>Click for the answer</summary>
+
+(a)
+```{r}
+thal_combined <- str_c("THALIDOMIDE_",
+                       c(name, smiles, mol_struc, cas))
+thal_combined
+```
+(b)
+```{r}
+thal_df <- enframe(thal_combined)
+thal_df
+```
+(c)
+```{r}
+thal_df %>%
+  separate(col = value, into = c("compound", "info"), sep = "_")
+```
+</details>
+
+<div class="question">
+##### Exercise `r les` {-} 
+
+Can you think of a smarter, more easy way to generate the dataframe of the previous exercise?
+</div>
+
+<details><summary>Click for the answer</summary>
+```{r}
+tibble(compound = "THALOMIDE",
+       info = c(name, smiles, mol_struc, cas)
+)
+```
+</details>
+
+## stringr (part 2)
+
+You may want to extract some characters from a string. For this, you can use the function `str_sub()`. This function takes an string and a start and end position as arguments.
+
+###### Examples
+
+```{r}
+dna_sequence <- "ACTGGTAACCCAGTAGGGAACTACC"
+
+# Extract characters at position 5-20 from the string
+dna_sequence %>% str_sub(start = 5, end = 20) 
+
+# Extract the last 10 characters of a string
+dna_sequence %>% str_sub(start = -10, end = -1)
+```
+
+`str_sub()` also works for vectors with different strings: it subtracts characters from each element of a vector. It is also possible to extract multiple regions by supplying a vector to the start and end positions.
+
+###### Examples
+
+```{r}
+dna_sequences <- c("ACTGGTAACCCAGTAGGGAACTACC", 
+                   "CCTTTCCAATTTTAAGGTAGTA", 
+                   "TTTAAGGGCCATCGATAATGGCG")
+
+# Extract position 5-20 from strings in vector
+dna_sequences %>% str_sub(start = 5, end = 12)
+
+# Extract position 5-20 and 6-21 from the second DNA sequence
+dna_sequences[2] %>% str_sub(start = c(5, 6), end = c(20, 21)) 
+```
+
+`str_sub()` can also be used to **replace** a character in a string. In addition, `str_sub()` can also be used to **insert** a character in a string at any position (with a little trick). The start and end coordinates will be reversed. The position at the end argument determines the position where the new character(s) will be inserted. 
+
+###### Examples
+
+```{r}
+sesamstraat <- "bert-ernie-pino"
+
+# Replace 'ernie' with 'meneer_aart'
+str_sub(sesamstraat, start = 6 , end = 10) <- "meneer_aart" 
+sesamstraat
+
+sesamstraat <-"bert-ernie-pino"
+
+# Add 'meneer_aart-' after 'bert' 
+# (NB: end position determines place of insert)
+str_sub(sesamstraat, start = 6, end = 5) <- "meneer_aart-"
+sesamstraat
+```
+
+You may want to convert upper case letters to lower case letters. For this, you can use the `str_to_lower()` function. If you want to convert lower case letters to upper case letters, you can use the `str_to_upper()` function. 
+
+###### Examples
+
+```{r}
+str_to_lower("ACTGGTAACCCAGTAGGGAACTACC")
+str_to_upper("atctaggtt")
+```
+
+<div class="question">
+##### Exercise `r les` {-} 
+
+In code that does not use **stringr**, you will often see `paste()` and `paste0()`. What is the difference between the two functions? What **stringr** function are they equivalent to? How do the functions differ in their handling of NA?
+
+To test the functions `paste()` and `paste0()`, create two test character strings, including one or more NA values.
+</div>
+
+<details><summary>Click for the answer</summary>
+```{r}
+string1 <- c("This is a string", NA)
+string2 <- c("Hello there, I am a second string", NA)
+
+paste(string1, string2)
+paste0(string1, string2)
+
+str_c(string1, string2) ## note that NA are not converted to "strings"
+```
+</details>
+
+<div class="question">
+##### Exercise `r les` {-} 
+
+Use `str_sub()` to extract each second to third character from each element in the two strings below?
+
+```{r}
+uneven <- c("BSA", "PBS", "TBST")
+even <- c("crispr", "cas9", "electroporation", "transfectin")
+```
+
+Combine the two strings in a list and use the map function to extract the characters.
+</div>
+
+<details><summary>Click for the answer</summary>
+```{r}
+uneven_even <- list(uneven, even)
+map(uneven_even, str_sub, 2, 3)
+```
+</details>
+
+<div class="question">
+##### Exercise `r les` {-} 
+
+Given a vector with different DNA sequences:
+
+```{r}
+dna_sequences <- c("ACTGGTAACCCAGTAGGGAACTACC", 
+                   "CCTTTCCAATTTTAAGGTAGTA", 
+                   "TTTAAGGGCCATCGATAATGGCG")
+```
+
+Create a tibble containing the following columns:
+
+- A column with the DNA sequences.
+- A column with the number of bases of each DNA sequences. 
+- A column with the last 10 bases of each DNA sequence. 
+</div>
+
+<details><summary>Click for the answer</summary>
+```{r}
+tibble(
+  sequences = dna_sequences,
+  n_bases = str_length(dna_sequences),
+  last10 = str_sub(dna_sequences, start = -10, end = -1)
+)
+```
+</details>
+
 
 
 

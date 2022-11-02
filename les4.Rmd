@@ -17,5 +17,3 @@ knitr::include_graphics("images/04_1_ggplot.png")
 ## Learning objectives
 
 After this lesson:
-
-...
