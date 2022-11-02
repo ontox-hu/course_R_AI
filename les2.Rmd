@@ -723,7 +723,7 @@ We will take a look at a hypothetical follow up experiment on the smoking data w
 ```{r}
 set.seed(123)
 smoking2 <- tibble(
-  controle = rnorm(200,180,15),
+  control = rnorm(200,180,15),
   patch = rnorm(200,160,25)
 )
 ```
@@ -778,7 +778,22 @@ ggplot(data = smoking2_tidy, aes(x = swimming_time)) +
 ```
 
 
+Or you could make a density plot (note the "y = ..density.."), including some minimal effort into design:
 
+```{r}
+# Change line colors by groups
+
+ggplot(data = smoking2_tidy, aes(x = swimming_time, color = group, fill=group)) + 
+geom_histogram(aes(y=..density..), position="identity", alpha=0.5, binwidth = 10)+
+geom_density(alpha=0.3)+
+scale_color_manual(values=c("#999999", "#E69F00", "#56B4E9"))+
+scale_fill_manual(values=c("#999999", "#E69F00", "#56B4E9"))+
+  labs(
+    title = "Distribution of swimming times of control mice",
+    x= "swimming time (min)",
+    y= "count")+
+theme_classic()
+```
 
 
 ## Difference Questions
@@ -866,7 +881,7 @@ penguins %>% count(species, sex) %>%
 ```
 
 #### Bar graphs with mean ± standard deviation
-Quite often, you will want to depict an average and standard deviation in a bar graph. For instance, the average flipper length in the different penguin species.
+Quite often, you will want to depict an average and standard deviation in a bar graph. For instance, the average flipper length in the different penguin species. 
 
 To make a bar graph with the average flipper length, we will need to calculate it first. We will do a lot more data wrangling in the next lesson, so for now, we will just make a new tibble with the averages we need, grouped per species. There are some missing values for flipper length (I imagine not all penguins cooperated nicely when their feet were measured), and we remove those using `na.rm=TRUE`. Look at the content of `flipper_summary` by typing it in the console.
 
@@ -1125,13 +1140,15 @@ colour_rabbits_summary %>%
        subtitle = "errorbars depict 1 standard deviation",
        x="rabbit colour", 
        y="average ear length (cm)") + 
-  ylim(0, 35) + 
+  ylim(0, 35) + # limits on the y axis
+  theme_classic() + #because I don't like grey backgrounds
+    theme(text = element_text(size=14)) + # font size
   geom_signif(
     comparisons = list(c("beige", "brown")),
     y_position = 30, tip_length = 0, vjust = 0.2,
     annotation = c("*")
   ) +
-  annotate("text", x = 1.5, y = 35, label = "two sample t-test p=0.002")
+  annotate("text", x = 1.5, y = 35, label = paste("two sample t-test p=",p_to_plot))
   
 ```
 
@@ -1206,7 +1223,74 @@ pairwise.t.test(PlantGrowth$weight, PlantGrowth$group, p.adj = "bonferroni")
 ```
 
 
-### Line graphs
+### Boxplots
+
+A **boxplot** (box and whisker plot) is a graph that shows the spread of quantitative data based on quartiles and outliers (see figure below). Boxplots may differ a bit in what the wiskers represent. ggplot calculates the Interquartile range (IQR). The upper whisker (vertical stripe) extends from the hinge (the box) to the largest value no further than 1.5 * IQR from the hinge. So  1.5 * IQR above the 75th percentile on top, and  1.5 * IQR below the 25th percentile on the bottom.
+
+```{r echo=FALSE, message=FALSE, out.width = "50%", fig.align = "center", fig.cap = "Interpretation of a boxplot made in ggplot. IQR = Inter Quartile Range."}
+knitr::include_graphics("images/04_2_boxplot.jpg")
+```
+
+To create a boxplot, we can use the function `geom_boxplot()`. We will use the `airquality` dataset which is built-in in R and contains daily air quality measurements in New York, May to September 1973. The variable "Ozone" contains mean ozone concentration in parts per billion from 13:00 to 15:00 hours at Roosevelt Island. 
+
+```{r, error=F, warning=F}
+airdf <- as.tibble(airquality)
+
+ggplot(data = airdf, aes(x = as.factor(Month), y = Ozone)) +
+  geom_boxplot(aes(fill = as.factor(Month)), 
+               outlier.colour = "red", outlier.shape = 8,show.legend = FALSE) +
+  scale_x_discrete(
+    labels=c("May","June","July","August","September")) +
+  theme_classic(base_size = 12) + # text size and overall theme
+  theme(axis.text.y = element_text(size=12, angle = 0, vjust = 0), #font y axis tick labels
+        axis.text.x = element_text(size=12, angle = 0, vjust = 0), #font x axis tick labels
+        axis.title.x = element_text(vjust = -2))+ #lower x-axis title a little
+  labs(
+    title = "Mean ozone concentration at Roosevelt Island",
+    subtitle= "per day, measured 1300 to 1500h, May to September 1973",
+    x= "Month",
+    y= "average [Ozone] (ppb)"
+    )
+```
+
+
+<div class="question">
+##### Exercise `r les` {-} 
+ggplot has been giving us an warning:
+
+> Warning message:
+Removed 37 rows containing non-finite values (stat_boxplot). 
+
+Why?
+</div>
+<details><summary>Click for the answer</summary>
+There are 37 missing values in the "Ozone" column.
+
+```{r}
+sum(is.na(airdf$Ozone))
+```
+</details>
+
+
+<!-- <div class="question"> -->
+<!-- ##### Exercise `r les` {-}  -->
+
+<!-- Use the built-in dataset 'iris' to answer the following question. Make a boxplot showing the summary data of the variable "Sepal.Lenght" for the different iris species listed in the "Species" variable. Each boxplot has a different color. -->
+<!-- </div> -->
+
+<!-- <details><summary>Click for the answer</summary> -->
+<!-- ```{r} -->
+<!-- ggplot(data = iris, aes(x = Species, y = Sepal.Length)) + -->
+<!--   geom_boxplot(aes(fill = Species))+ -->
+<!--     labs( -->
+<!--     title = "Sepal Lenght of different iris species", -->
+<!--     y= "Sepal Length" -->
+<!--     )+ -->
+<!--   theme(legend.position = "none", text = element_text(size=16)) -->
+<!-- ``` -->
+<!-- </details> -->
+
+## Line graphs
 
 A **line graph** is a graph that connects data points with a line to visualise a (local) trend. The x-axis variable is continuous, preferably with similar intervals and most often involves time series but also concentrations, doses or any other increasing unit. For example, measurement of tumor size per week after treatment, or number of species per increasing area unit.
 
@@ -1311,75 +1395,6 @@ ggplot(data = trem_line_mean_sd, aes(x = conc_nM, y = mean)) +
         axis.title.x = element_text(vjust = -1)) #lower x-axis title a little
 ```
 </details>
-
-
-### Boxplots
-
-A **boxplot** (box and whisker plot) is a graph that shows the spread of quantitative data based on quartiles and outliers (see figure below). Boxplots may differ a bit in what the wiskers represent. ggplot calculates the Interquartile range (IQR). The upper whisker (vertical stripe) extends from the hinge (the box) to the largest value no further than 1.5 * IQR from the hinge. So  1.5 * IQR above the 75th percentile on top, and  1.5 * IQR below the 25th percentile on the bottom.
-
-```{r echo=FALSE, message=FALSE, out.width = "50%", fig.align = "center", fig.cap = "Interpretation of a boxplot made in ggplot. IQR = Inter Quartile Range."}
-knitr::include_graphics("images/04_2_boxplot.jpg")
-```
-
-To create a boxplot, we can use the function `geom_boxplot()`. We will use the `airquality` dataset which is built-in in R and contains daily air quality measurements in New York, May to September 1973. The variable "Ozone" contains mean ozone concentration in parts per billion from 13:00 to 15:00 hours at Roosevelt Island. 
-
-```{r, error=F, warning=F}
-airdf <- as.tibble(airquality)
-
-ggplot(data = airdf, aes(x = as.factor(Month), y = Ozone)) +
-  geom_boxplot(aes(fill = as.factor(Month)), 
-               outlier.colour = "red", outlier.shape = 8,show.legend = FALSE) +
-  scale_x_discrete(
-    labels=c("May","June","July","August","September")) +
-  theme_classic(base_size = 12) + # text size and overall theme
-  theme(axis.text.y = element_text(size=12, angle = 0, vjust = 0), #font y axis tick labels
-        axis.text.x = element_text(size=12, angle = 0, vjust = 0), #font x axis tick labels
-        axis.title.x = element_text(vjust = -2))+ #lower x-axis title a little
-  labs(
-    title = "Mean ozone concentration at Roosevelt Island",
-    subtitle= "per day, measured 1300 to 1500h, May to September 1973",
-    x= "Month",
-    y= "average [Ozone] (ppb)"
-    )
-```
-
-
-<div class="question">
-##### Exercise `r les` {-} 
-ggplot has been giving us an warning:
-
-> Warning message:
-Removed 37 rows containing non-finite values (stat_boxplot). 
-
-Why?
-</div>
-<details><summary>Click for the answer</summary>
-There are 37 missing values in the "Ozone" column.
-
-```{r}
-sum(is.na(airdf$Ozone))
-```
-</details>
-
-
-<!-- <div class="question"> -->
-<!-- ##### Exercise `r les` {-}  -->
-
-<!-- Use the built-in dataset 'iris' to answer the following question. Make a boxplot showing the summary data of the variable "Sepal.Lenght" for the different iris species listed in the "Species" variable. Each boxplot has a different color. -->
-<!-- </div> -->
-
-<!-- <details><summary>Click for the answer</summary> -->
-<!-- ```{r} -->
-<!-- ggplot(data = iris, aes(x = Species, y = Sepal.Length)) + -->
-<!--   geom_boxplot(aes(fill = Species))+ -->
-<!--     labs( -->
-<!--     title = "Sepal Lenght of different iris species", -->
-<!--     y= "Sepal Length" -->
-<!--     )+ -->
-<!--   theme(legend.position = "none", text = element_text(size=16)) -->
-<!-- ``` -->
-<!-- </details> -->
-
 
 ## Scatter plot
 
@@ -1528,3 +1543,67 @@ ggplot(data = df, aes(x = x, y = y)) +
 
 ```
 
+## Heatmaps
+
+For many specific visualisation requirements there are R packages available that will do most of the work for you. 
+
+Suppose for instance that we have a dataset with expression data for 5 genes in 4 samples and we would like to make a heatmap. For the sake of clarity, we will take a very blunt approach to genetics.
+Here are the volunteers who supplied us with the samples:
+
+```{r, echo=FALSE,out.width="15%", out.height="20%",fig.cap="",fig.show='hold',fig.align='center'}
+knitr::include_graphics(c(here::here('images','squirtle.jpg'),
+                          here::here('images','eevee.jpg'),
+                          here::here('images','charizard.jpg'),
+                          here::here('images','rattata.png')))
+```
+
+We will make up some count data with some highly expressed genes, some less expressed genes, and one that does not show any counts apart from one sample:
+
+```{r}
+gene_more_hairy <- c(200,400,200,400) 
+gene_less_hairy <- c(400,200,400,200) 
+gene_big_earsize <- c(2,20,2,20) 
+gene_small_earsize <- c(20,2,20,2) 
+gene_wingsize <- c(0,0,150,0)
+
+expressiondata <- rbind(gene_more_hairy, gene_less_hairy,
+                        gene_big_earsize, gene_small_earsize, gene_wingsize)
+colnames(expressiondata) <- c("s1_squirtle","s2_eevee","s3_charizard","s4_rattata")
+expressiondata
+```
+
+Now we can ask R to calculate a distance matrix for us. It will do this for the rows:
+
+```{r}
+dist(expressiondata)
+```
+
+The least distant two genes are `big_earsize` and `small_earsize`, so those will be clustered together. We can plot a dendrogram of the distance matrix:
+
+```{r dendogram1}
+dist(expressiondata) %>% hclust() %>% plot()
+```
+
+We can see that the expression of gene `more_hairy` and `less_hairy` are more similar to each other than to the other genes, `big_earsize` and `small_earsize` are similar, and the expression of `wingsize` looks a bit more like that of the earsize genes than to that of the hairy genes. Looking at the data in expression data, that seems reasonable.
+
+Now let's make a heatmap. We will use the **pheatmap** package, and as with the dendogram, it will take just one line of code (well, two if you include loading the package):
+
+```{r, eval=F}
+install.packages("pheatmap") # you need to install packages once
+```
+```{r heatmap1}
+library(pheatmap) # and load them every time you start a new session
+pheatmap(expressiondata, scale="row")
+```
+
+`scale = "row" ` means that we asked pheatmap to center and scale the values, it does so by subtracting the mean (centering) and dividing by the standard deviation (scaling), thus calculating Z scores. You can always find out what arguments you can give to a function by typing ?functionname in the console. In this case: `?pheatmap`.
+
+We see that the expression of `more_hairy` and `big_earsize` seems to be correlated, as well as the `less_hairy` and `small_earsize`. Indeed, the more hairy pokemon in our selection tend to have bigger ears and the less hairy pokemon tend to have smaller ears. Also, the expression of the `wingsize` gene seems to be correlated to expression of `less_hairy` and `small_earsize` genes.
+
+### Explore
+
+We will not try to cover all your specific visualisation needs, as they will probably be very different. We hope this lesson gives you enough background in using ggplot to explore the internet, apply what you find and visualise your own data. 
+
+You could start with taking a look at the [r graph gallery](https://r-graph-gallery.com/index.html).
+
+Please join us in the open breakout room for help in visualising your own data, as well as exchanging usefull packages and showing of visualisations.
