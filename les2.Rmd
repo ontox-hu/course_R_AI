@@ -7,7 +7,7 @@ load("course_urls.RData")
 les <- 2
 ```
 
-![](images/02_1_rlogo.png)
+![](images/04_1_ggplot.png)
 
 ## Contents day 2
 
@@ -663,7 +663,7 @@ gene_expression_1_tidy2 <- gene_expression_1_tidy %>%  pivot_longer(
 ## map functions
 Generally, you will want to avoid repetitive code as it is prone to errors. So, if you want to apply the same function to a number of dataframes, you don't want to do this in a separate, very similar line for each one. 
 
-For instance, let's say we want to perform a Shapiro-Wilk test on multiple conditions in a dataset. The smoking dataset used in this example is an unpaired experiment containing two different mice groups: control mice ("Controle") and a group of mice continuously exposed to cigarette smoke ("Rook"). The measurement values represent minutes of swimming until exhaustion. 
+For instance, let's say we want to perform a Shapiro-Wilk test on multiple conditions in a dataset. The smoking dataset used in this example is an unpaired experiment containing two different mice groups: control mice ("Controle") and a group of mice continuously exposed to cigarette smoke ("Rook" - you learned some Dutch!). The measurement values represent minutes of swimming until exhaustion. 
 
 
 ###### Example
@@ -764,7 +764,7 @@ To make separate histograms for the control and the patch group in the same figu
 
 ```{r}
 # tidy data: each variable in 1 column
-smoking2_tidy <-  pivot_longer(data = smoking2, cols = c(controle, patch),  
+smoking2_tidy <-  pivot_longer(data = smoking2, cols = c(control, patch),  
                              names_to = "group",  values_to = "swimming_time")
 
 # create histograms
