@@ -6,7 +6,9 @@ les <- 4
 ```
 
 ```{r echo=FALSE, message=FALSE, out.width = "50%", fig.align = "center"}
-knitr::include_graphics("images/04_1_ggplot.png")
+library(tidyverse)
+knitr::opts_chunk$set(error = TRUE, warning = FALSE)
+
 ```
 
 ## Contents day 4
@@ -16,4 +18,1326 @@ knitr::include_graphics("images/04_1_ggplot.png")
 
 ## Learning objectives
 
-After this lesson:
+After this lesson, you will be able to:
+
+- how to write user-defined functions;
+- how to define default settings for user-defined functions;
+- how to define and use function arguments;
+- and how to create functions with conditional statements. 
+
+
+## User-defined functions
+
+Functions are essential in R programming. R consist of many functions to perform common tasks such as functions from the tidyverse package to import, inspect and manipulate your tibble dataframes.
+
+However, you may encounter a problem where you have to write your own function to automate a task. We will start with a simple example to illustrate the syntax of writing your own function in R. 
+
+Sequencing reactions provide a Q score to indicate the quality of base calling. The formula  is defined as:
+
+$Q = -10 * log_{10}(P)$
+
+In this formula, Q is the Q score and P is the probability of incorrect base calling written as a fraction. 
+
+For example, the sequencing software calculates a chance of 10% for miscalling the correct base (nucleotide). In this case, P equals 0,1 (10% written as fraction of 0,1). The Q-value becomes 10 (filling in the formula). 
+
+###### Example
+
+```{r}
+# Calculating the Q scores in R for different P values
+-10 * log10(0.001) %>% round(digits = 2)
+-10 * log10(0.01) %>% round(digits = 2)
+-10 * log10(0.12) %>% round(digits = 2)
+-10 * log10(0.22) %>% round(digits = 2) 
+-10 * log10(0.34) %>% round(digits = 2)                                            
+```
+
+Every time we want to calculate the Q value we'll have to copy-paste the code. In programming, it is very important to avoid copying-pasting code. To automate the calculation of Q-values, we can write our own function.
+
+###### Example
+
+```{r}
+q_value <- function(x){                                                             
+  (-10 * log10(x)) %>% round()                        
+}
+```
+
+The function() consist of three elements:
+
+1. Pick an informative name name for the created function. Is this case `q_value`.
+1. List the arguments to the function between parenthesis (). Here we have just one input (x). If we had more inputs the call would look like `function(x, y, z)`. 
+1. You place the code you have developed in body of the function defined by curly braces `{}`.
+
+Once you have defined the function you can use it as a "regular" R function (as long as it exist in the environment!). 
+
+###### Examples
+
+```{r}
+# Using the function with different P values
+q_value(0.111)
+q_value(0.01)
+
+# Using the function with an object
+pvalues_of_qscores <- 10^seq(from = -1, to = -6, by = -1)
+q_value(pvalues_of_qscores)
+
+# Using a function in a function
+q_value(c(0.01, 0.1, 0.5))
+```
+
+## Functions with conditionals
+
+A function (or basically any type of programming script) executes each line of code in the order of writing. However, we can control the flow of a function by using conditional statements. In this way part of a function will only be executed if certain condition(s) are fulfilled.  
+
+Conditional statements in R are written as follows:
+
+```{r eval=FALSE}
+if (condition) {
+
+  do action1
+
+} else {
+
+  do action2 
+
+}
+```
+
+In plain English, this scheme means if the condition evaluates to TRUE, perform action1. If the condition evaluates to FALSE, perform action2. If a condition is TRUE the other conditions will be skipped and not executed. 
+
+This principle can be expanded with multiple conditional statements:
+
+```{r eval=FALSE}
+if (condition1) {
+
+  do action1
+
+} else if (condition2) {
+
+  do action2
+
+} else {
+
+do action 3 
+
+}
+```
+
+To demonstrate how conditional statements work in R programming, we'll write a simple function:
+
+```{r}
+# Create the simple function
+simple_example <- function(x) {
+  if(x == 4) {
+    return("four")
+  } else if (x == 2) {
+    return("two")
+  } else if (x == 42) {
+    return("The Answer to the Ultimate Question of Life, the Universe, and Everything is 42")
+  } else {
+    return("don't panic")
+  }
+}
+
+# Use the simple function
+simple_example(5)
+simple_example(42)
+```
+
+We can also combine multiple conditions in `if()` and `else if()` statements. If both conditions need to be TRUE, we use the and symbol `&&`. If either one of the conditions needs to be TRUE, we use the or symbol `||`. 
+
+###### Example
+
+```{r}
+simple_example2 <- function(x, y) {
+  
+  # x = numeric and y = numeric
+  if(x == 42 && y == 42) {
+    
+    return("Both numbers are the Answer to the Ultimate Question of Life, the Universe, and Everything")
+  } else if (x == 42 || y == 42) {
+    
+    return("One of the numbers is the Answer to the Ultimate Question of Life, the Universe, and Everything")
+  
+  } else {
+        
+    return("don't panic")
+    
+  }
+}
+
+simple_example2(2, 3)
+simple_example2(3, 42)
+simple_example2(42, 42)
+```
+
+So far we have only tested whether an input value is equal to (`==`) a certain value. Other comparison operators are:
+
+- greater than or equal to: `>=`
+- greater than: `>`
+- smaller than or equal to: `<=`
+- smaller than: `<`
+- not equal to: `!=`
+
+###### Examples
+
+```{r}
+simple_example3 <- function(x) {
+  
+  if(x != 42) {
+    
+    return("don't panic")
+  
+  } else {
+  
+    return("The answer to the Ultimate Question of Life, the Universe, and Everything")
+      
+  }
+}
+
+simple_example3(13)
+simple_example3(42)
+
+simple_example4 <- function(x) {
+  
+  if(x > 42) {
+      
+    return("Not the answer to the ultimate question: too high")
+      
+  } else if(x < 42) {
+     
+    return("Not the answer to the ultimate question: too  low")
+      
+  } else {
+      
+    return("The answer to the Ultimate Question of Life, the Universe, and Everything")
+      
+  }
+}
+
+simple_example4(43)
+simple_example4(41)
+simple_example4(42)
+```
+
+<div class="question">
+##### Exercise `r les` {-}
+
+Write a greeting function that says “good morning”, “good afternoon”, or “good evening”, depending on the time of day. Take into account the following:
+
+- `Sys.time()` will output both date and time: "2020-04-12 15:35:21 CEST".
+- Use `substr()` to extract the time only. 
+- Define conditionals: 
+    * if time is between time1 and time2 say 'good morning';
+    * else if time is between time3 and time4 say 'good afternoon';
+    * else if time is between time5 and time6 say 'good evening';
+    * else say 'good night'.
+</div>
+
+<details><summary>Click for the answer</summary>  
+```{r}
+greetings <- function() {
+
+  now <- Sys.time()
+
+  now <- substr(now, 12, 19)
+
+
+  if(now <= "12:00:00" && now >= "05:00:00") {
+
+    return("Good Morning!")
+
+  } else if (now > "12:00:00" && now <= "18:00:00") {
+
+    return("Good Afternoon!")
+    
+  } else if (now > "18:00:00" && now <= "23:00:00") {
+
+    return("Good Evening!")
+
+  } else {
+
+    return("Good Night!")
+
+  }
+}
+```
+</details>
+
+<div class="question">
+##### Exercise `r les` {-}
+
+Read the source code for each of the following three functions and figure out what they do (use tests for this purpose). Make a suggestion for better function names. Remember: good function names are verbs, good R-object names are nouns. 
+
+```{r}
+# Function 1
+f1 <- function(string, prefix) {
+
+  substr(string, 1, nchar(prefix)) == prefix
+
+}
+
+# Function 2
+f2 <- function(x) {
+
+  if (length(x) <= 1) {
+
+    return(NULL)
+
+  }
+
+  x[ -length(x) ]
+
+}
+
+# Function 3
+f3 <- function(x, y) {
+
+  rep(y, length.out = length(x))
+
+}
+```
+</div>
+
+<details><summary>Click for the answer</summary>
+
+```{r}
+## Function 1
+test_f1_1 <- c("This is a test")
+test_f1_2 <- c("TweetinTrump")
+test_f1_3 <- c("This")
+
+## test f1
+f1(string = test_f1_1, prefix = test_f1_3)
+## new name f1 -> prefix_checker()
+
+## Function 2 
+test_f2_vector_1 <- c(1:10)
+test_f2_vector_2 <- 1
+
+## test f2
+f2(x = test_f2_vector_1)
+f2(x = test_f2_vector_2)
+## new name f2 -> strip_end() or minus_one()
+
+## Function 3
+test_f3_vector_1 <- c(1:10)
+test_f3_vector_2 <- c(21:44)
+test_f3_vector_3 <- 1
+
+## test f3
+f3(x = test_f3_vector_1, y = test_f3_vector_2)
+f3(x = test_f3_vector_3, y = test_f3_vector_2)
+## new name f3 -> subset_y_on_x()
+```
+</details>
+
+### Using `case_when` for conditionals
+
+Instead of using the if/if else/else statements you can use the `case_when` function to construct conditionals. Let's rewrite the function in the example above, but this time using the `case_when` function:
+
+```{r}
+simple_example5 <- function(x) {
+  
+  case_when(
+    
+    x > 42 ~ "Not the answer to the ultimate question: too high",
+    x < 42 ~ "Not the answer to the ultimate question: too  low", 
+    TRUE ~ "The answer to the Ultimate Question of Life, the Universe, and Everything"
+    
+  )
+  
+}
+
+simple_example5(42)
+```
+
+Note that the `case_when` function uses the syntax `[condition] ~ [action]`. The tilde (~) works as a separator between the condition and the action. Also note that if you want to represent 'else', you use 'TRUE' as the condition; because TRUE is always true, the last statement will always execute if the previous statements were not executed (like would be the case with 'else'). 
+
+## Functions with messages
+
+Conditional statements are often used to check whether the input of a function is appropriate to execute the function. For example if you provide a character vector to the function `mean()`, R will throw an error message. 
+
+There is a hierarchy of messages from R after execution of a function:
+
+- `message()`: additional information on the function. The `message()` function doesn't break the code of the function.
+- `warning()`: something might be wrong here or the result is not as expected. The `warning()` function doesn't break the code of the function.
+- `stop()`: the function can not be executed because of wrong input. The function will stop executing the code
+
+Here we use a function inside as a condition. If the function output evaluates to TRUE than the action can be executed. 
+
+###### Example
+
+```{r, eval=F}
+# Define the function
+simple_example5 <- function(x, na.rm = TRUE) {
+  
+      if(is.numeric(x)) {
+        
+        sum(x, na.rm = na.rm)
+        
+      } else {
+        
+        stop("not the right input: should be numeric")
+        
+      }
+}
+
+# Use the function with different inputs
+simple_example5(c(1:10))
+simple_example5(c(1:10, NA))
+simple_example5(c(1:10, "NA"))
+```
+
+<div class="question">
+##### Exercise `r les` {-}
+
+Create a function that will return the (vectorized) sum of 2 integers (only whole numbers). For example:
+
+```{r}
+vector1 <- c(1L:10L)
+vector2 <- c(11L:20L)
+vector1 + vector2 
+```
+
+Add a warning for objects that do not have the same length. The function will still continue even if the vectors are not of the same length. Test the function with integer vectors of the same length and with integer vectors of unequal length. 
+</div>
+
+<details><summary>Click for the answer</summary>
+```{r,}
+sum_integers <- function(integer_1, integer_2) {
+  
+  if(length(integer_1) == length(integer_2)) {
+    
+    sum_integers <- integer_1 + integer_2
+    
+    return(sum_integers)
+    
+  } else {
+    
+    message("integer arguments are not of the same length, recycling the shortest integer to calculate sum")
+    
+  }
+}
+
+# Test the function with objects of equal length
+sum_integers(integer_1 = c(1L:5L), integer_2 = c(11L:15L))
+
+# Test the function with objects of unequal length
+sum_integers(integer_1 = c(1L:5L), integer_2 = c(11L:20L))
+```
+</details>
+
+<div class="question">
+##### Exercise `r les` {-}
+
+Write a function that can calculate the `mean()` of a numeric vector. Take the following into account:
+
+- You are not allowed to use the build-in function `mean()`.
+- You may use the preexisting function `sum()`.
+- The function has to provide a `stop()` if the argument is non-numeric and a message if the argument is numeric.
+- Name your function `calculate_mean`.
+- Test the function with the following tests:
+
+```{r}
+set.seed(1234)
+test_numeric <- rnorm(100)
+test_non_numeric <- c("Wolf", "Deer", "Cayote", "Tiger")
+```
+
+It is important to first lay-out the steps of your function. We call this process pseudo-coding or function modeling. Here we have provided a function model for this exercise: 
+
+```{r eval=FALSE}
+calculate_mean <- function(numeric_vector){
+  # step 1: test if argument is numeric, stop() if not # model for step 1
+  if(is.numeric(numeric_vector)){
+    
+    message("write a clear message what the function is doing with the input here")
+    
+  } else {
+    
+    stop("write the error stop message here")
+    
+  } 
+  
+  # step 2: calculate the sum of 'numeric_vector'
+  # step 3: determine the length of 'numeric_vector'
+  # step 4: divide sum by length 
+  # step 5: return result of the function with `return(result)`
+}
+```
+</div>
+
+<details><summary>Click for the answer</summary>
+```{r}
+calculate_mean <- function(numeric_vector){
+  
+  # step 1
+  if(is.numeric(numeric_vector)){
+    
+    message("input vector is numeric. Calculating mean over argument")
+    
+  } else {
+    
+    stop("input vector is not numeric, cannot determine mean, quitting.")
+
+  }
+  
+  # step 2
+  sum <- sum(numeric_vector)
+
+  # step 3:
+  length <- length(numeric_vector)
+
+  # step 4:
+  mean <- sum/length
+  return(mean)
+
+}
+
+# Evaluation of the function with different types of vectors
+set.seed(1234)
+test_numeric <- rnorm(100)
+test_non_numeric <- c("Wolf", "Deer", "Cayote", "Tiger")
+calculate_mean(test_numeric)
+calculate_mean(test_non_numeric)
+```
+</details>
+
+<div class="question">
+##### Exercise `r les` {-}
+
+In this exercise we will extend the functionality of the user defined function `calculate_mean()` of the previous exercise. The function has to return the mean and has to state whether the input is an integer, a numeric or a logical vector. In addition, if the input is a character, it has to stop and display an error message. Take into account the following:
+
+- Use multiple `if()` statements to check whether the input is an integer, a numeric, logical  or character vector.
+- Note you can calculate the mean of a logical vector: each TRUE in the vector will be automatically converted to a 1, each FALSE will be converted to a 0.
+- Call your function `calculate_mean_extended`.
+- Test the function with the vector objects below:
+
+```{r}
+vector_1 <- c(1:4)
+vector_2 <- c("Tiger", "Wolf", "Zebra")
+vector_3 <- c(1.3, 1.6, 4.6, 7.8)
+vector_4 <- as.logical(c(0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0))
+vector_5 <- c(TRUE, FALSE, FALSE, TRUE, TRUE)
+```
+
+</div>
+
+<details><summary>Click for the answer</summary>
+```{r}
+calculate_mean_extended <- function(vector){
+  
+  # step 1:
+  if(is.numeric(vector)){
+    
+    message("Argument is numeric, calculating mean")
+
+  }
+  
+  if(is.integer(vector)) {
+    
+    message("Argument is an integer, calculating mean")
+    
+  }
+  
+  if(is.logical(vector)) {
+    
+    message("Argument is a logical. Converting 'FALSE' to 0 and 'TRUE' to 1, calculating average of zeros and ones. A value of >0.5 will mean that there are more TRUEs than FALSEs in the vector. A value of <0.5 will mean that there are more FALSEs than TRUEs")
+    
+  }
+
+
+  if(is.character(vector)) {
+    
+    stop("argument is a character (vector). Cannot calculate mean over a vector of elements of type 'character'", call. = FALSE)
+    
+  }
+
+  # step 2:
+  sum <- sum(vector)
+
+  # step 3:
+  length <- length(vector)
+
+  # step 4:
+  mean <- sum/length
+  return(mean)  
+}
+
+## evaluation of the function with different types of vectors:
+
+vector_1 <- c(1:4)
+vector_2 <- c("Tiger", "Wolf", "Zebra")
+vector_3 <- c(1.3, 1.6, 4.6, 7.8)
+vector_4 <- as.logical(c(0,1,1,1,1,1,0,0,0,0,0,1,0))
+vector_5 <- c(TRUE, FALSE, FALSE, TRUE, TRUE)
+
+is.numeric(vector_1)
+is.integer(vector_1)
+is.character(vector_3)
+
+calculate_mean_extended(vector_1)
+calculate_mean_extended(vector_2)
+calculate_mean_extended(vector_3)
+calculate_mean_extended(vector_4)
+calculate_mean_extended(vector_5)
+```
+</details>
+
+Alternatively, we can make use of the `stopifnot()` function to check whether the input values for a user defined function are correct. Using this function you can list the requirements (conditionals) of the input values.
+
+###### Example 
+
+```{r}
+simple_example5 <- function(x, na.rm = TRUE) {
+  
+  stopifnot(is.numeric(x))
+  
+  sum(x, na.rm = na.rm)
+
+}
+
+simple_example5(1:20)
+tbl <- tibble(a = c(1:10), b = c(21:30))
+simple_example5(tbl$b)
+sesamstraat <- c("bert", "ernie")
+simple_example5(sesamstraat)
+```
+
+<div class="question">
+##### Exercise `r les` {-}
+
+Create a function, named `integer_present`, that will return TRUE if a given integer is part of a vector.
+
+For example:
+
+```{r eval=FALSE}
+vector <- 1:10  
+integer <- 10
+integer_present(vector,  integer)
+[1] TRUE
+vector <- 1:10
+integer <- 11
+integer_present(vector,  integer)
+[1] FALSE
+```
+
+Write a `stopifnot()` if the argument is a character vector. Use the `any()` function inside the function body. Check your function with some test values and vectors to see if it works. Include a character vector to check if the function throws an error.
+</div>
+
+<details><summary>Click for the answer</summary>
+```{r}
+# Define the function
+is_integer_present <- function(vector, integer) {
+  
+  stopifnot(!is.character(vector))
+  
+  integer_present <- vector == integer
+  true_false <- any(integer_present)
+  
+  return(true_false)
+}
+
+# Test the function
+is_integer_present(vector = c(1:40), integer = 39)
+```
+</details>
+
+## Default settings for function arguments
+
+Generally there are two types of arguments to provide to a function:
+
+- Input arguments to compute on.
+- Arguments to control the details of the computation.
+
+For example the R base function `log()` has two arguments (see also the R help page):
+
+- x = data to compute on : a numeric or complex vector.
+- base = a positive or complex number: the base with respect to which logarithms are computed. Defaults to e=exp(1).
+
+###### Examples
+
+```{r}
+exp(1)
+log(10)                                     
+exp_4 <- exp(4)
+log(exp_4)
+```
+
+If we want to change the details of the calculation by using a different base we can modify the base argument: 
+
+###### Examples
+
+```{r}
+log(10, base = 10)
+log(16, base = 2)
+```
+
+Let's write a simple function using the example of the previous pages. There we calculated the Q value given a P value. In this example we will reverse the formula and calculate the P value (as a percentage, not as a fraction) given a Q value with the following formula:
+
+$P = 10^{(Q / -10)} \times 100$
+
+```{r}
+p_value <- function(x) {
+     
+  (10^(x/-10) * 100) %>%
+    round() %>% 
+    paste0("%")
+  
+}
+
+p_value(5)                                              
+p_value(32)
+```
+
+The last example calculates a P value of 0 %. This is because the default setting of the round() function is 0 digits. Let's say we want the output of our function to have a default of 3 digits. In order to get a 3 digits output we add a named argument, digits, to our function:
+
+```{r}
+p_value <- function(x, digits = 3) {
+     
+  (10^(x/-10) * 100) %>%
+     round(digits = digits) %>%
+     paste0("%")
+  
+}
+
+p_value(32)
+```
+
+If we don't change the value of the named argument digits in the function call, the function will by default use the values set in the function definition (`digits = 3`). However, we can also explicitly change the argument digits to any other number: 
+
+```{r}
+p_value(25) 
+p_value(25, digits = 2)
+p_value(25, digits = 1)
+```
+
+We have seen that we can use named arguments to set default behavior of your own function.  Named arguments are passed to the appropriate function in your function code to change the details of the calculation.
+
+## Dot dot dot argument in functions
+
+It is not always necessary to set a default behavior of your function by using a named argument in the function definition. Most often the default behavior of R functions is sufficient to do the job. If we want to change the default behavior of R functions within the body of your own defined function we can use the **dot dot dot** (`...`) argument (also known as an **ellipsis** argument). 
+The `...` argument should be listed as the last argument in the function definition when it is used for capturing arguments to control the calculation. The `...` passes on the arguments directly to the appropriate function inside the body of your function.  
+
+###### Example
+
+```{r}
+p_value <- function(x, ...) {
+     
+  (10^(x/-10) * 100) %>%
+     round(...) %>%
+     paste0("%")
+
+}
+
+p_value(25)
+```
+
+If we provide additional argument to our own function (and this is possible because of the `...` argument in the function definition) we can change the output of our function:
+
+```{r}
+p_value(25, digits = 3)
+p_value(25, 3) 
+```
+
+It is important to note that if we only provide a value, the order of the arguments is critical. Here, the value is passed on as the second argument within the `round()` function (the first being the value from the calculation redirected by the pipe symbol to the `round()` function. Because the second argument of the `round()` functions is the digit argument, the value is automatically coupled to this argument. However, if the digit argument would have been in third position in the `round()` function definition, than the value would not have been coupled to the right argument within the `round()` function. Therefore the `...` argument must be placed at the right position within the function that receives the arguments from your own created function. 
+
+Let's exemplify what happens if the `...` argument is not placed at the right position within a function. We will write a function to calculate the average of two samples and subsequently calculates the p-value of the student's t-test. The `t.test()` function has many different arguments. This is because there are many different t-test to perform. 
+
+We also have to set the confidence level of the t-test. If we look at the arguments of the `t.test()` function using `?t.test()` we see the following definition: 
+
+```{r eval=FALSE}
+t.test(x, y = NULL, 
+       alternative = c("two.sided", "less", "greater"),
+       mu = 0, paired = FALSE, var.equal = FALSE,
+       conf.level = 0.95, ...)
+```
+
+If we run two samples with no additional arguments, i.e.  `t.test(x, y)`, by default it will perform a two-sided, unpaired t-test with unequal variance and a confidence level of 0.95. We also see that the argument conf.level is the sixth argument listed. 
+
+We first try to write a function to calculate the average of two samples and subsequently calculates the p-value of the student's t-test. We use the `...` argument in the function definition: 
+
+```{r}
+statistics <- function(x, y, ...)  {
+     
+  mean_x <- mean(x) 
+  mean_y <- mean(y)
+  
+  confidence <- paste0("conf.level = ", ...)
+     
+  ttest <- t.test(x, y, ...)
+     
+  tibble(mean_sample1 = mean_x, 
+         mean_sample2 = mean_y, 
+         p_value = ttest$p.value, 
+         confidence_level = confidence)
+}
+
+sample1 <- 1:10
+sample2 <- 12:21
+statistics(sample1, sample2)
+```
+
+We can easily change the confidence interval with a named argument which is position independent:
+
+```{r}
+statistics(sample1, sample2,  conf.level = 0.99) 
+```
+
+However if we run the `statistics()` function with only a value we will get an error:
+
+```{r}
+statistics(sample1, sample2,  0.99)   
+```
+
+The reason the `statistics()` function throws an error is because 0.99 is passed as the third  element to the `t.test()` function whereas the argument `conf.level` is the sixth argument in the `t.test()` function. Using a value as an argument is position dependent!
+
+We can modify the function definition so that the argument is passed on as the sixth argument in the t.test() function:
+
+```{r}
+statistics <- function(x, y, ...)  {
+     
+  mean_x <- mean(x) 
+  mean_y <- mean(y)
+     
+  confidence <- paste0("conf.level = ", ...)
+  ttest <- t.test(x, y, , , , ...)
+     
+  tibble(mean_sample1 = mean_x, 
+         mean_sample2 = mean_y,
+         p_value = ttest$p.value,
+         confidence_level = confidence)
+}
+
+sample1 <- 1:10
+sample2 <- 12:21
+statistics(sample1, sample2, 0.99)                              
+```
+
+## Pseudo coding
+
+In biological experiments we always use a control sample to estimate the background signal. This is by no means different when we're doing "in silico" analysis to understand biology. For example,  we want to search for patterns in the genome and ask whether those patterns occur more often (enrichment) in enhancer / promoters or any other element of the genome as compared to a background set of sequences. To address this question you select: 
+
+- pattern to search for.
+- selection of the genome you're interested in (for example promoters, enhancers, genes and so on).
+- random set of sequences with equal properties (number and length of the sequences) as the experimental data set.
+
+Here, we will write a function to generate random DNA fragments where the user can specify the number of sequences and the length of each sequence. Before we start writing the function we'll do some [pseudo coding](https://en.wikipedia.org/wiki/Pseudocode). **Pseudo coding** is a way to write a detailed human readable code where you describe the different steps to complete your function. Pseudo coding can not be executed but serves as an outline of your code.
+
+Below you can find the pseudo code for generating random DNA fragments: 
+
+<div class="dagopdracht">
+**Step 1: Generate a string (of any length) with random numbers between 1-4. Here we use the runif() function which randomly returns numbers between 1-4 with with equal probability* .**  
+number_string <- generate numbers %>% 
+round %>% 
+make it a string
+**Step 2: Convert string with numbers 1-4 to ACGT (1=A, 2=C, 3=G, 4=C)**
+dna_random <- number_string %>% replace numbers with letters  
+**Step 3: Divide random DNA string into user defined number of pieces**
+define start points
+define end points
+dna_random_pieces <- dna_random %>% subset each start to end 
+
+</div>
+
+If we want 1000 random DNA fragments each with a length of 1000, we can first generate a character vector with length 1000000 and subsequently divide into 1000 pieces. First we run the individual components of the function. It is important that you understand each line of code.
+
+```{r}
+# Step 1: Generate a string (of any length) with random numbers between 1-4. 
+number_string <- runif(1000000,1,4) %>% 
+  round() %>% 
+  str_c(collapse = "")
+
+# Step 2: Convert string with numbers 1-4 to ACGT (1=A, 2=C, 3=G, 4=C) 
+dna_random <- number_string %>% chartr(old = "1234", new = "TAGC")  
+
+# Step 3: Divide random DNA string into user defined number of pieces
+start <- seq(from = 1, to = 1000000, by = 1000)  
+end <- start +999  
+dna_random_pieces <- dna_random %>% str_sub(start = start, end = end) 
+```
+
+Next we will combine the different R functions to generate a function. Think about the following:
+
+- The name of the function. Come up with an informative name of the function. 
+- Arguments: what goes into the function?
+- Line of code in the body of the function. Which R functions will do the job?
+
+```{r}
+dna_random <- function(n, length) {
+  
+  # Step 1: Generate a string (of any length) with random numbers between 1-4.
+  number_string <- runif((n * length),1,4) %>%
+    round() %>% 
+    str_c(collapse = "")
+  
+  # Step 2: Convert string with numbers 1-4 to ACGT (1=A, 2=C, 3=G, 4=C)
+  dna_random <- number_string %>% chartr(old = "1234", new = "TAGC")
+  
+  # Step 3: Divide random DNA string into user defined number of pieces
+  start <- seq(from = 1, to = (n * length), by = length)
+  end <- start +(length-1)
+  dna_random %>% str_sub(start = start, end = end)     
+}
+```
+
+Check if the function works with different arguments: 
+
+```{r}
+dna_random_5_2 <- dna_random(5, 2)
+dna_random_5_2
+dna_random_10_5 <- dna_random(10, 5)
+dna_random_10_5
+```
+
+Note that the output will be different each time you run the function `dna_random()` as it generates random sequences!
+
+## Function argument equals NULL
+
+In the previous section  we defined a function to generate random DNA fragments. We will now write a function to test how often patterns can occur within a set of random DNA samples. Here we will define a function argument which is optional i.e. not obligatory to provide to the function: we set the optional argument equal to `NULL`. We will also use our defined function `dna_random()` in the body of a new defined function: 
+
+```{r}
+pattern_in_randomdna <- function(length = 1000,  n = 100,  pattern1, pattern2 = NULL) {
+  
+  ## generate random dna fragment
+  dnarandom <- dna_random(n = n, length = length)
+  searchpattern <- str_c(pattern1, pattern2, sep = "|")
+  
+  dnarandom %>% str_count(regex(searchpattern, ignore_case = T)) %>% sum()
+}
+```
+
+Because we have set the pattern2 argument to NULL, we can provide a second pattern but this is not strictly necessary. However, we have to provide at least one pattern using the pattern1 argument. Note that the default settings of function `pattern_in_randomdna()` is to generate 100 fragments with random DNA of length 1000. 
+
+###### Examples
+
+```{r}
+pattern_in_randomdna(pattern1 ="^a{2}", pattern2 = "g{2}$")
+pattern_in_randomdna(pattern1 ="^a{2}|g{2}$")
+```
+
+Because it is a random sequence generator the outcome of the script is different each time we run the function. Each time we generate a different output. If we repeat the function many times we get a better idea about the distribution of the output. 
+
+In R (and any other programming languages) there are methods to repeat code without copying and pasting hundreds of times. This family of functions will be discussed later in this course. Here, we repeat the function 100 times using the `replicate()` function:
+
+```{r}
+replicate(100,  pattern_in_randomdna(pattern1 = "aaaa"))
+```
+
+We can use these numbers to make a histogram to check the distribution. If we know the type of distribution we can calculate the change of finding a certain value. If this change is very small, most often less than 5 % or 0.05, we argue that the value is not from a random process but is due to the experimental condition.
+
+For example, the control would be our background counts and our experiment would involve counting the occurrence of a motif in promoter regions. If we found a count in the promoter regions which is on the extreme right end of the distribution we can argue that there is a significant enrichment of this motif in promoter regions. However, it doesn't say anything though about the biological meaning!
+
+## Exercise
+
+For this exercise it is important that you first read through the whole text for the exercise. Write every step in comments/pseudocode, before you start writing the actual solutions.
+
+<!--  1) **Install the Github package 'citrulliner'** from the following Github repository, using the following code (you don't need to update packages, but if you want, choose "CRAN only". If subsequently R asks you if you want to install from sources, type `no`). -->
+
+<!-- ```{r eval=FALSE} -->
+<!-- remotes::install_github("https://github.com/uashogeschoolutrecht/citrulliner") -->
+<!-- ``` -->
+
+<!-- This package belong to a publication by [Kartaram et al., 2019](https://pubmed.ncbi.nlm.nih.gov/30340895/). The paper describes a study where human healthy volunteers were exposed to different bike-ergometer exercises and several biomarkers were determined before, during and after the exercise.  -->
+
+ 1) Load the data with:
+ 
+```{r, eval=F}
+load(file='/data/data_lesson_3/citrulline_data.rda') # or change to your path
+```
+
+(change the path if you put the file in a subfolder) 
+ 
+
+The analytes mentioned in the paper:
+
+ - Glutamine (`gln`)
+ - Alanine (`ala`)
+ - Citrulline (`citrul`)
+ - Arginine (`arg`)
+ - Urea (`UREUM`)
+ - IFABP (`ifabp`)
+ - Cortisol (`CORT`)
+ - Creatine-phosphokinase (`CK`)
+ 
+ We will focus on Citrulline first, which was measured in μm/L after 5 different bike-ergometer protocols (P1 till P5)
+
+ 2) **inspect the data**
+<!--  2) **Get the data** with the following code (it loads the data from the package): -->
+
+```{r, include=F}
+data(package = "citrulliner", dataset = "citrulline_data")
+#citrulline_data
+```
+
+ 3) **Prepare/filter the data as needed** (write pseudocode first!) and **create a line graph** for the analyte citrulline. Plot the `time` variable on the x-axis and the `concentration` variable on the y-axis, with separate coloured lines for each protocol. 
+ 
+
+<details><summary> HINTs for data preparation/filtering  </summary>
+
+For each (aka "grouped by) protocol, for each measured time point: calculate the mean concentration.
+
+Write pseudo-code first, if you get lost in the order of these steps.
+
+</details>
+
+<details><summary> HINT: You should end up with this figure: </summary>
+
+
+```{r, include=F}
+## install 'citrulliner' package from Github.com
+#install_github("uashogeschoolutrecht/citrulliner")
+data(package = "citrulliner", dataset = "citrulline_data")
+
+## filter, group and sumarize data for one analyte 
+data_citrulline_mean <- citrulline_data %>% 
+  dplyr::filter(analyte == "citrul") %>%
+  group_by(protocol, time) %>%
+  summarise(mean_conc = mean(concentration, na.rm = TRUE))
+```
+
+
+```{r, echo=F}
+## create graph
+data_citrulline_mean %>%
+  ggplot(aes(x = time,y = mean_conc)) +
+  geom_line(aes(group = protocol, 
+                colour = protocol))+
+  labs(title = "Citrulline concentration over time", 
+       subtitle = "data from Kartaram et al. 2018",
+       y="concentration (μm/L)", 
+       x="time (hours)")+
+  theme_classic()
+```
+
+
+```{r, echo=FALSE, include=F}
+knitr::include_graphics(
+  here::here(
+    "images",
+    "citrulline.png"
+ )
+)
+```
+
+</details>
+
+ 4) create a **new object** `fig_title` containing the figure title (not the subtitle).
+
+ 5) Turn you graph-code into a **function** called `plot_analyte()` that has two input arguments:
+ - `df`. df will be (inside the function) the dataframe with data of a single analyte that has been summarized (mean concentration for each protocol and measured time point). 
+ - `titel` . this is the figure title you want this figure to have.
+
+ 6) **Test your function** by putting in the (filtered) data for the analyte ` citrulline` and subsequently for the analyte `CORT` (you will need to make a new filtered dataset)  
+
+You should see the below picture:
+
+```{r, echo=F}
+
+data_cortisol_mean <- citrulline_data %>% 
+  dplyr::filter(analyte == "CORT") %>%
+  group_by(protocol, time) %>%
+  summarise(mean_conc = mean(concentration, na.rm = TRUE))
+
+fig_title <- "Cortisol concentration over time"
+## create graph
+data_cortisol_mean %>%
+  ggplot(aes(x = time,y = mean_conc)) +
+  geom_line(aes(group = protocol, 
+                colour = protocol))+
+  labs(title = fig_title, 
+       subtitle = "data from Kartaram et al. 2018",
+       y="concentration (μm/L)", 
+       x="time (hours)")+
+  theme_classic()
+```
+
+
+
+<!-- ```{r, echo=FALSE, include=F} -->
+<!-- knitr::include_graphics( -->
+<!--   here::here( -->
+<!--     "images", -->
+<!--     "cortline.png" -->
+<!--  ) -->
+<!-- ) -->
+<!-- ``` -->
+
+</div>
+
+<details><summary>Click for the answer</summary>
+
+<!-- Neh sorry, deze bespreken we eerst in de les :) -->
+
+<!-- Daarna zet ik hem er wel in. -->
+
+```{r, eval=FALSE, include=T}
+## packages
+library(tidyverse)
+library(remotes)
+
+## 1. install 'citrulliner' package from Github.com
+install_github("uashogeschoolutrecht/citrulliner")
+
+## 2. get the data
+data(package = "citrulliner", dataset = "citrulline_data")
+# check the measured analytes if you want:
+citrulline_data$analyte %>% unique()
+
+## 3. filter, group and sumarize data for one analyte 
+data_citrulline_mean <- citrulline_data %>% 
+  filter(analyte == "citrul") %>%
+  group_by(protocol, time) %>%
+  summarise(mean_conc = mean(concentration, na.rm = TRUE))
+
+## 3. create graph
+data_citrulline_mean %>%
+  ggplot(aes(x = time,y = mean_conc)) +
+  geom_line(aes(group = protocol, 
+                colour = protocol))+
+  labs(title = "Citrulline concentration over time", 
+       subtitle = "data from Kartaram et al. 2018",
+       y="concentration (μm/L)", 
+       x="time (hours)")+
+  theme_classic()
+
+
+#4.  create the figure title
+fig_title <- "Citrulline concentration over time"
+
+## 5. create function
+## turn above graph plotting code into function
+plot_analyte <- function(df,titel){ ## input is summarised data
+  
+  ## create graph
+  plot <- df %>%
+    ggplot(aes(x = time,y = mean_conc)) +
+    geom_line(aes(group = protocol, 
+                  colour = protocol))+
+    labs(title = titel, 
+       subtitle = "data from Kartaram et al. 2018",
+       y="concentration (μm/L)", 
+       x="time (hours)")+
+    theme_classic()
+
+  return(plot)
+  
+}
+
+## 6. 
+
+## test function with summarized citrulline data
+plot_analyte(df = data_citrulline_mean,fig_title)
+
+## and with cortisol:
+
+data_cortisol_mean <- citrulline_data %>% 
+  dplyr::filter(analyte == "CORT") %>%
+  group_by(protocol, time) %>%
+  summarise(mean_conc = mean(concentration, na.rm = TRUE))
+
+fig_title <- "Cortisol concentration over time"
+plot_analyte(df = data_cortisol_mean,fig_title)
+
+```
+</details>
+
+## follow-up exercise 
+<div class="dagopdracht">
+
+You can easily spot the difficulty with the workflow of the previous exercise: if you want to plot a different analyte, you need to do additional filtering and summarizing... So there should be a better way: and there is!
+
+An easy fix is to expand the number of arguments for the function you have written in the previous exercise. Call your new function `plot_analyte_improved`. Complete the following steps:
+
+ 1) Add a function argument that can be used to filter the data for the analyte that the user wants to plot, call this argument `biomarker` in your function. The user should be able to type `citrulline` or `alanine` (without capitals).  Within your function, use the case_when() function to select the correct variable based on this biomarker argument (so `citrul` when the user types `citrulline` and `ala` when the user types `alanine`).
+
+ 2) Include the data filtering step in you function body (the part that was the answer to subquestion 3 in the previous exercise: "3. Prepare/filter the data as needed")
+
+ 3) Put the ggplot code you made previously in your function. Add a piece of code that automatically plots an appropriate title, including the name of the biomarker.
+
+ 4) now test your function by plotting the graphs for a few analytes.
+
+**after you have this part working, try to  do the following:**
+
+ 5) ggplots can be written to a file using the `ggsave()` function. (try `?ggsave` in the console.) We need to define the path where we want the file to be written. Let's write the figure to a file with a name containing the analyte, in the same folder as the script. For example, if the analyte of interest is "CORT" and the file location is "./daur1/huiswerkles6", the graph should be written to disk as `"./daur1/huiswerkles6/CORT.png"`
+ 
+We will later use `here()` from the `here package` to find the script's location. This will be fed into a new input argument for your function. Add the new argument, and call it path_for_image:
+ 
+```{r, eval=F}
+
+
+plot_analyte_improved <- function(df,
+                                  biomarker,
+                                  path_for_image = NULL,
+                                  ...
+                                 ){ 
+  etc
+  etc
+  etc
+}
+```
+ 
+ 6) Now within your function, put the ggplot in a new object instead of just using it to plot in the Plots-window. To do this, change your ggplot code line to something resembling:
+ 
+```{r, eval=F}
+plotje <-   df_summary %>%
+    ggplot(aes(x = time,y = mean_conc)) +
+  etc 
+```
+ 
+ 7) Also within your function, make an object containing the full file path to print you image to. Use the inut arguments from your function: path_for_image and biomarker. 
+ 
+<details><summary>HINT (or actually, the answer to this subquestion)</summary>
+```{r, eval=F}
+  file_path <- file.path(
+    path_for_image,
+    paste0(biomarker,".png"))
+```
+</details>
+
+</br>
+
+You can now use `ggsave()` (try `?ggsave` in the console. ) to write this graph to a file at the path location. The syntax for ggsave is `ggsave(plot = plotje, filename = file_path)` However, we only want to save to a file + put the image on screen when the user gives a `path_for_image argument`. When the user leaves the `path_for_image` empty, your function should only put the image on screen, but not save it to a file. 
+ 
+ 7) Within your function, write a if/else statement that does this by checking whether `path_for_image` is NULL or not.
+ 
+ 8) test your function with:
+ 
+```{r, eval=F}
+plot_analyte_improved2(
+  df = citrulline_data, 
+  biomarker = "alanine",
+  path_for_image = here::here()
+ )
+```
+ 
+
+</div>
+
+<details><summary>Click for the answer</summary>
+
+<!-- same procedure as last question :) -->
+
+
+```{r, eval=FALSE, include=T}
+plot_analyte_improved <- function(df,
+                                  biomarker,
+                                  ...
+                                 ){ 
+  
+## select correct variable
+  
+  biomark <- 
+  case_when(
+    biomarker == "glutamine" ~ "gln",
+    biomarker == "alanine" ~ "ala",
+    biomarker == "citrulline" ~ "citrul",
+    biomarker == "arginine" ~ "arg",
+    biomarker == "urea" ~ "UREUM",
+    biomarker == "ifabp" ~ "ifabp",
+    biomarker == "cortisol" ~ "CORT",
+    biomarker == "creatine-phosphokinase" ~ "CK",
+
+  )
+  
+## filter and summarise
+  df_summary <- df %>% 
+  dplyr::filter(analyte == biomark) %>%
+  group_by(protocol, time) %>%
+  summarise(mean_conc = mean(concentration, na.rm = TRUE))
+
+## create graph
+df_summary %>%
+    ggplot(aes(x = time,y = mean_conc)) +
+    geom_line(aes(group = protocol, 
+                  colour = protocol)) +
+      labs(title = paste("Mean concentration of", biomarker, "over time"), 
+       subtitle = "data from Kartaram et al. 2018",
+       y="concentration (μm/L)", 
+       x="time (hours)")+
+    theme_classic()
+ 
+
+}
+```
+
+<!-- And to use our new function: -->
+
+```{r, eval=FALSE, include=T}
+plot_analyte_improved(
+  df = citrulline_data, 
+  biomarker = "cortisol"
+ )
+
+```
+
+
+```{r, include=T, eval=F}
+
+plot_analyte_improved2 <- function(df,
+                                  biomarker,
+                                  path_for_image = NULL,
+                                  ...
+                                 ){ 
+  
+## select correct variable
+  
+  biomark <- 
+  case_when(
+    biomarker == "glutamine" ~ "gln",
+    biomarker == "alanine" ~ "ala",
+    biomarker == "citrulline" ~ "citrul",
+    biomarker == "arginine" ~ "arg",
+    biomarker == "urea" ~ "UREUM",
+    biomarker == "ifabp" ~ "ifabp",
+    biomarker == "cortisol" ~ "CORT",
+    biomarker == "creatine-phosphokinase" ~ "CK",
+
+  )
+  
+## filter and summarise
+  df_summary <- df %>% 
+  dplyr::filter(analyte == biomark) %>%
+  group_by(protocol, time) %>%
+  summarise(mean_conc = mean(concentration, na.rm = TRUE))
+
+## create graph
+plotje <- df_summary %>%
+    ggplot(aes(x = time,y = mean_conc)) +
+    geom_line(aes(group = protocol, 
+                  colour = protocol)) +
+      labs(title = paste("Mean concentration of", biomarker, "over time"), 
+       subtitle = "data from Kartaram et al. 2018",
+       y="concentration (μm/L)", 
+       x="time (hours)")+
+    theme_classic()
+
+file_path <- file.path(
+    path_for_image,
+    paste0(biomarker,".png"))
+ 
+if(is.null(path_for_image)) {
+    return(plotje)
+  } else {
+    ggsave(plot = plotje, filename = file_path)
+    return(plotje)
+  }
+
+}
+
+```
+
+
+```{r, eval=F, include=T}
+plot_analyte_improved2(
+  df = citrulline_data, 
+  biomarker = "citrulline",
+  path_for_image = here::here()
+ )
+```
+
+
+
+</details>
+
+</div>

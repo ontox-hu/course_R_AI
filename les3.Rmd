@@ -373,7 +373,7 @@ tibble_2 <- tibble_1 %>% mutate(new_variable1 = serie1 * serie2,
 tibble_2
 ```
 
-To further demonstrate `mutate()` we will start working with dataset *ce11_gene_exp** which is saved as an R object in *data/lesson5**. This dataset contains gene expression data of all genes in C elegans (genome version 11). The dataset contains six variables:
+To further demonstrate `mutate()` we will start working with dataset *ce11_gene_exp.rds**. This dataset contains gene expression data of all genes in C elegans (genome version 11). The dataset contains six variables:
 
 1. GeneID: name of the gene
 2. controle_1: gene expression levels in C elegans non-treated, experiment1
@@ -383,9 +383,12 @@ To further demonstrate `mutate()` we will start working with dataset *ce11_gene_
 6. length: length of the gene
 
 ###### Example
+
+```{r, eval=T}
+# import R object into Rstudio
+ce11_gene_exp <- readRDS("data/data_lesson_3/ce11_gene_exp.rds")   # or change to your path  
+```
 ```{r}
-# import R object from server into Rstudio
-ce11_gene_exp <- readRDS("data/lesson5/ce11_gene_exp.rds")     
 head(ce11_gene_exp, n = 5)
 dim(ce11_gene_exp)  # 46778 row (=genes) and six variables
 ```
@@ -420,49 +423,49 @@ colnames(ce11_gene_exp_rpm_rpkm)
 
 We will continue with object **ce11_gene_exp_rpm_rpkm** later in this lesson, so **save you code in a script!**
 
-<div class="question">
-##### Exercise `r les` {-} 
-Use dataset **flights** to answer the questions
+<!-- <div class="question"> -->
+<!-- ##### Exercise `r les` {-}  -->
+<!-- Use dataset **flights** to answer the questions -->
 
-(a) Calculate the speed in km / hour of each flight in the flights dataset
+<!-- (a) Calculate the speed in km / hour of each flight in the flights dataset -->
 
-(b) Which flight had the highest speed?
+<!-- (b) Which flight had the highest speed? -->
 
-(c) We are wondering whether there is a correlation between distance and speed. Make the graph you would plot to start investigating this. To reduce the time needed to plot this image, reduce the dataset by removing similar flights based on distance, keeping only distict flights.
+<!-- (c) We are wondering whether there is a correlation between distance and speed. Make the graph you would plot to start investigating this. To reduce the time needed to plot this image, reduce the dataset by removing similar flights based on distance, keeping only distict flights. -->
 
 
-</div>
+<!-- </div> -->
 
-<details><summary>Click for the answer</summary>
+<!-- <details><summary>Click for the answer</summary> -->
 
-#(a)
-```{r}
+<!-- #(a) -->
+<!-- ```{r} -->
 
-flights_speed <- flights %>% select(month, day, carrier, flight, distance, air_time) %>%
-                            mutate(distance_km = distance * 1.609,
-                                    airtime_hr = air_time/ 60,
-                                    speed_km_hr = distance_km / airtime_hr)
-```
+<!-- flights_speed <- flights %>% select(month, day, carrier, flight, distance, air_time) %>% -->
+<!--                             mutate(distance_km = distance * 1.609, -->
+<!--                                     airtime_hr = air_time/ 60, -->
+<!--                                     speed_km_hr = distance_km / airtime_hr) -->
+<!-- ``` -->
 
-#(b)
-```{r}
-flights_speed %>% arrange(desc(speed_km_hr))
-```
+<!-- #(b) -->
+<!-- ```{r} -->
+<!-- flights_speed %>% arrange(desc(speed_km_hr)) -->
+<!-- ``` -->
 
-#(c)
-```{r}
-# remove observations with no data value = NA
-flights_speed_na <- flights_speed %>% filter(!is.na(speed_km_hr))    
+<!-- #(c) -->
+<!-- ```{r} -->
+<!-- # remove observations with no data value = NA -->
+<!-- flights_speed_na <- flights_speed %>% filter(!is.na(speed_km_hr))     -->
 
-#  reduce dataset by removing similar flights based on distance
-flights_speed_na_distinct <- flights_speed_na %>% distinct(distance, .keep_all = T)      
+<!-- #  reduce dataset by removing similar flights based on distance -->
+<!-- flights_speed_na_distinct <- flights_speed_na %>% distinct(distance, .keep_all = T)       -->
 
-flights_speed_na_distinct %>% ggplot(aes(x=distance, y=speed_km_hr)) +
-                      geom_point() +
-                      geom_smooth(se=F)
+<!-- flights_speed_na_distinct %>% ggplot(aes(x=distance, y=speed_km_hr)) + -->
+<!--                       geom_point() + -->
+<!--                       geom_smooth(se=F) -->
 
-```
-</details>
+<!-- ``` -->
+<!-- </details> -->
 
 
 ## Summarizing your data
@@ -639,12 +642,12 @@ head(ce11_gene_exp_rpm_rpkm$GeneID)
 
 Each gene is associated with (normalised) gene expression levels and the length of the gene. If we find a set of genes that are either up- or downregulated between control and treated samples we want to know more about this subset of genes. What are the functions of those genes? 
 
-In server folder data/lesson5 is a zipped file named **mart_export.txt.gz** . This file is tab separated file and contains ensemble genes of C. elegans and associated [gene ontology](http://geneontology.org/) descriptions. First we have to import this file into the Rstudio environment and inspect its contents.
+In [zipped data folder](/data/data_lesson_3.zip) for this lesson is a zipped file named **mart_export.txt.gz** . This file is tab separated file and contains ensemble genes of C. elegans and associated [gene ontology](http://geneontology.org/) descriptions. First we have to import this file into the Rstudio environment and inspect its contents.
 
 ###### Example
 ```{r }
 
-ce11_biomart <- read_tsv(file = "data/lesson5/mart_export.txt.gz") #read_function() can directly import zipped files!
+ce11_biomart <- read_tsv(file = "data/data_lesson_3/mart_export.txt.gz") #read_function() can directly import zipped files!
 dim(ce11_biomart)
 
 # View(ce11_biomart) # use view to view the whole dataset
@@ -678,7 +681,7 @@ dim(ce11_gene_exp_go)
 
 <div class="question">
 ##### Exercise `r les` {-} 
-A researcher is using a luciferase reporter assay to study the effect of 8 chemicals in 4 different concentration (in triplo) on the activity of the reporter gene. The data is listed in Excel file **screening.xlsx** in the folder data/lesson5. The file contains two data sheets. One sheet contains the experimental set-up. The second sheet contains the actual data in a 96 wells plate layout
+A researcher is using a luciferase reporter assay to study the effect of 8 chemicals in 4 different concentration (in triplo) on the activity of the reporter gene. The data is listed in Excel file **screening.xlsx**. The file contains two data sheets. One sheet contains the experimental set-up. The second sheet contains the actual data in a 96 wells plate layout
 
 (a)  Import  both sheets of file screening.xlsx into Rstudio as separate  R object. 
 
@@ -697,9 +700,9 @@ A researcher is using a luciferase reporter assay to study the effect of 8 chemi
 library(tidyverse)
 library(readxl)
 
-excel_sheets("data/lesson5/screening.xlsx")
-screening_experiment <- read_excel("data/lesson5/screening.xlsx", sheet="experiment")
-screening_data <- read_excel("data/lesson5/screening.xlsx", sheet="data")
+excel_sheets("data/data_lesson_3/screening.xlsx")
+screening_experiment <- read_excel("data/data_lesson_3/screening.xlsx", sheet="experiment")
+screening_data <- read_excel("data/data_lesson_3/screening.xlsx", sheet="data")
 head(screening_experiment) #use view() to inspect all the data
 head(screening_data)
 ```
