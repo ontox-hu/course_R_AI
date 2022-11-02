@@ -826,7 +826,6 @@ Here, we will write a function to generate random DNA fragments where the user c
 
 Below you can find the pseudo code for generating random DNA fragments: 
 
-<div class="dagopdracht">
 **Step 1: Generate a string (of any length) with random numbers between 1-4. Here we use the runif() function which randomly returns numbers between 1-4 with with equal probability* .**  
 number_string <- generate numbers %>% 
 round %>% 
@@ -838,7 +837,6 @@ define start points
 define end points
 dna_random_pieces <- dna_random %>% subset each start to end 
 
-</div>
 
 If we want 1000 random DNA fragments each with a length of 1000, we can first generate a character vector with length 1000000 and subsequently divide into 1000 pieces. First we run the individual components of the function. It is important that you understand each line of code.
 
@@ -1063,8 +1061,6 @@ data_cortisol_mean %>%
 <!-- ) -->
 <!-- ``` -->
 
-</div>
-
 <details><summary>Click for the answer</summary>
 
 <!-- Neh sorry, deze bespreken we eerst in de les :) -->
@@ -1143,7 +1139,6 @@ plot_analyte(df = data_cortisol_mean,fig_title)
 </details>
 
 ## follow-up exercise 
-<div class="dagopdracht">
 
 You can easily spot the difficulty with the workflow of the previous exercise: if you want to plot a different analyte, you need to do additional filtering and summarizing... So there should be a better way: and there is!
 
@@ -1212,7 +1207,6 @@ plot_analyte_improved2(
 ```
  
 
-</div>
 
 <details><summary>Click for the answer</summary>
 
@@ -1340,4 +1334,3 @@ plot_analyte_improved2(
 
 </details>
 
-</div>
