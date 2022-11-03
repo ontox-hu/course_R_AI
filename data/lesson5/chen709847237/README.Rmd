@@ -18,3 +18,32 @@ file.path <- here::here(
 archive(file.path, td) ## gets all the files
 
 ```
+
+## Get source code for data augmentation (Matlab files)
+```{r}
+## works only on Linux and Windows
+remotes::install_github("lhmet/lhmetools")
+library(lhmetools)
+unrar(file = here::here(
+  "data",
+  "lesson5",
+  "qsar",
+  "oral_toxicity_data.rar"
+), dest_dir = here::here(
+  "data",
+  "lesson5",
+  "qsar",
+  "oral_toxicity_data"
+))
+```
+
+On Mac
+run in the Terminals if you have brew installed:
+```
+brew install rar
+unrar x <filename>
+```
+
+
+
+
