@@ -1,0 +1,14 @@
+name: demo_visualizations
+title: demo_visualizations
+username: mteunis
+account: mteunis
+server: rstudio-connect.hu.nl
+hostUrl: https://rstudio-connect.hu.nl/__api__
+appId: 43
+bundleId: 250
+url: https://rstudio-connect.hu.nl/demoviz/
+when: 1667307107.21139
+lastSyncTime: 1667307107.2114
+asMultiple: FALSE
+asStatic: TRUE
+ignoredFiles: demo_visualizations.Rmd
