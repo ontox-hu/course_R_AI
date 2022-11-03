@@ -1,0 +1,64 @@
+/*!
+ * Gebaseerd op: 
+ * Bootstrap v3.3.2 (http://getbootstrap.com)
+ * Copyright 2011-2015 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ 
+ * Versie 1.0
+ * Auteur: D. Lina
+ * Custom CSS voor bootstrap
+*/
+
+/* Progress bar kleuren toevoegingen 
+   Deze zijn zonder de striped varianten */
+
+.progress-bar-donkerblauw{
+	background-color:#172969;
+}
+.progress-bar-oranje{
+	background-color:#ff5f0d;
+}
+.progress-bar-groen{
+	background-color:#23b61e;
+}
+.progress-bar-lichtblauw{
+	background-color:#3eacec;
+}
+.progress-bar-middenblauw{
+	background-color:#0551be;
+}
+.progress-bar-muurrood{
+	background-color:#b61e23;
+}
+
+/* Deze kleuren zijn belangrijk en moeten altijd meegenomen worden  */
+.text-primary {
+  color: #337ab7;
+}
+a.text-primary:hover {
+  color: #286090;
+}
+.text-success {
+  color: #3c763d;
+}
+a.text-success:hover {
+  color: #2b542c;
+}
+.text-info {
+  color: #31708f;
+}
+a.text-info:hover {
+  color: #245269;
+}
+.text-warning {
+  color: #8a6d3b;
+}
+a.text-warning:hover {
+  color: #66512c;
+}
+.text-danger {
+  color: #a94442;
+}
+a.text-danger:hover {
+  color: #843534;
+}

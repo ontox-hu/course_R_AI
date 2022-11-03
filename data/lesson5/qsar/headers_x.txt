@@ -1,0 +1,13 @@
+## Headers to the file in ./data/lesson5/qsar/X.csv
+"colname","description"
+"IDS","An id for the compound"
+"CASRN","CAS-reg-number"
+"DTXSID","CompTox-EPA-id"
+"Chemical_Name","Full-chemical-name"
+"Structure_Source","Where-was-the-structure-derived-from"
+"Canonical_QSARr","SMILES-canonical"
+"Salt_Solvent","Is-the-compound-a-solvent-or-salt"
+"InChI_Code_QSARr","InChI-string"
+"InChI_Key_QSARr","InChI-string-key"
+"LD50_mgkg","Lethal-dose-at-50%-effect"
+"toxic","Is-the-compound-classified-as-toxic(TRUE/FALSE)"
