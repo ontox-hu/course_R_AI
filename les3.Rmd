@@ -642,7 +642,7 @@ head(ce11_gene_exp_rpm_rpkm$GeneID)
 
 Each gene is associated with (normalised) gene expression levels and the length of the gene. If we find a set of genes that are either up- or downregulated between control and treated samples we want to know more about this subset of genes. What are the functions of those genes? 
 
-In [zipped data folder](/data/data_lesson_3.zip) for this lesson is a zipped file named **mart_export.txt.gz** . This file is tab separated file and contains ensemble genes of C. elegans and associated [gene ontology](http://geneontology.org/) descriptions. First we have to import this file into the Rstudio environment and inspect its contents.
+In [zipped data folder](data/data_lesson_3.zip) for this lesson is a zipped file named **mart_export.txt.gz** . This file is tab separated file and contains ensemble genes of C. elegans and associated [gene ontology](http://geneontology.org/) descriptions. First we have to import this file into the Rstudio environment and inspect its contents.
 
 ###### Example
 ```{r }
