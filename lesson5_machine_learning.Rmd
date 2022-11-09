@@ -505,7 +505,7 @@ For factors like `dest` and `origin`, [standard practice](https://bookdown.org/m
 four_origins <- 
   train_data %>% 
   select(origin, arr_delay) %>% 
-  slice(1:4)
+  dplyr::slice(1:4)
 
 origin_dummies <- 
   recipe(arr_delay ~ origin, data = train_data) %>% 
@@ -1507,9 +1507,13 @@ library(rpart.plot)  # for visualizing a decision tree
 library(vip)         # for variable importance plots
 
 ```
+</details>
 
-To tune the hyperparameters of our XGBoost model we can update (create a new) model
+## Model tuning
+Model tuning, means that we will try to find the optimal value for the so-called hyperparameters of the model. These parameters are the paramters that define some setting of the model. For the Random Forest model we saw earlier, we chose an arbitrary value for instance for the `mtry` and `trees` hyperparameters. During the model tuning process, we run muliple models with varying values for the hyperparameters. Each time we evaluate the model to check the performance. The result from this tuning will hopefully yield the best setting for our hyperparameters. Finally, we can run the model one last time with these optimized setting to get the maximum performance. Because model tuning is expensive in terms of computing power, I have run the computation on a Virtual Machine in the Cloud. A machine with 30 cores and 472 Gb RAM memory. A big computer, much bigger than your laptop. The results of these expensive calculations were saved to disk. They can be found online [here](**ADD LINK**).
+To tune the hyperparameters of our XGBoost model we can update (create a new) model using a grid search. This is structural way of defining different values for our hyperparameters. We stick to the [Tidymodels tuning workflow here](https://www.tidymodels.org/start/tuning/).
 
+In stead of defining a value for the hyperparameters, we use the `tune()` function to act as a placeholder for the actual values from the tune grid:
 ```{r}
 xgb_mod_tune <- boost_tree(
   mtry = tune(), 
@@ -1535,19 +1539,167 @@ set.seed(234)
 cell_folds <- vfold_cv(qsar_train, v = 3)
 ```
 
-```{r, eval=FALSE}
-set.seed(345)
+We tune our parameters according the grid, over the data-folds we created. This step takes a long time to compute. I ran this on 30 core VM, with 472 Gb RAM. A very large machine, in comparison to a standards laptop, almost 4x more compute power. On that machine it took about 2 hours for the code below to finish. That is why I stored the results on disk, so that you do not need to run this. For safety reasons, I out-commented the code, so that you do not accidentally run it. 
+```{r}
+#set.seed(345)
 
-xgb_wf_tune <- workflow() %>%
-  add_model(xgb_mod_tune) %>%
-  add_formula(class ~ .)
+#tree_grid <- grid_regular(
+#   trees(),
+#   tree_depth(),
+#   finalize(mtry(), select(data_qsar , -class)),
+#   levels = 3)
+# 
+# 
+# set.seed(234)
+# cell_folds <- vfold_cv(qsar_train, v = 3)
+# 
 
-xgb_res <- 
-  xgb_wf_tune %>% 
-  tune_grid(
-    resamples = cell_folds,
-    grid = tree_grid, control = control_grid(verbose = TRUE))
+#xgb_wf_tune <- workflow() %>%
+#  add_model(xgb_mod_tune) %>%
+#  add_formula(class ~ .)
+
+#xgb_res <- 
+#  xgb_wf_tune %>% 
+#  tune_grid(
+#    resamples = cell_folds,
+#    grid = tree_grid, control = control_grid(verbose = TRUE))
     
 
-xgb_res
+#xgb_res
 ```
+
+## Read results from disk
+```{r}
+xgb_res <- readr::read_rds(here::here("data", "xgb_res.rds"))
+xgb_res
+
+hyper_p <- xgb_res |>
+  collect_metrics()
+
+xgb_res %>%
+  collect_metrics() %>%
+  mutate(tree_depth = factor(tree_depth)) %>%
+  ggplot(aes(trees, mean, color = tree_depth)) +
+#  geom_line(size = 1.5, alpha = 0.6) +
+  geom_point(size = 2) +
+  facet_wrap(~ .metric, scales = "free", nrow = 2) +
+  scale_x_log10(labels = scales::label_number()) +
+  scale_color_viridis_d(option = "plasma", begin = .9, end = 0) +
+  facet_wrap(~mtry)
+
+xgb_res %>%
+  show_best("accuracy")
+
+best_boost <- xgb_res %>%
+  select_best("accuracy")
+
+final_wf <- 
+  xgb_wf %>% 
+  finalize_workflow(best_boost)
+final_wf
+
+final_fit <- 
+  final_wf %>%
+  last_fit(qsar_split) 
+
+final_fit$.metrics
+
+#xgb_fit %>% extract_fit_parsnip()
+#predict(final_fit, qsar_test)
+
+final_fit$.predictions
+
+final_fit$.predictions[[1]] %>% 
+  accuracy(truth= as.factor(class), .pred_class) 
+
+caret::confusionMatrix(
+  final_fit$.predictions[[1]]$.pred_class, final_fit$.predictions[[1]]$class )
+
+```
+
+## Bigger grid
+https://cran.r-project.org/web/packages/doFuture/vignettes/doFuture.html
+```{r}
+# ## we can optimize the big grid tuning using a different engine
+ xgb_l_tune <- boost_tree(
+   trees = tune(),
+   mtry = tune(),
+   tree_depth = tune()) %>% 
+   set_engine("xgboost") |>
+   set_mode("classification")
+# 
+# tree_grid <- grid_regular(
+#   trees(),
+#   tree_depth(),
+#   finalize(mtry(), select(data_qsar , -class)),
+#   levels = 10)
+# 
+# 
+# set.seed(234)
+# cell_folds <- vfold_cv(qsar_train, v = 10)
+# 
+
+# 
+# set.seed(345)
+
+## read results from disk
+xgb_l_res <- readr::read_rds("xgb_l_res.rds")
+
+ xgb_wf_l_tune <- workflow() %>%
+   add_model(xgb_l_tune) %>%
+   add_formula(class ~ .)
+
+#xgb_l_res <- 
+#  xgb_wf_l_tune %>% 
+#  tune_grid(
+#    resamples = cell_folds,
+#    grid = tree_grid, control = control_grid(verbose = TRUE))
+    
+#xgb_l_res
+#readr::write_rds(xgb_l_res, "xgb_l_res.rds")
+
+hyper_p <- xgb_l_res |>
+  collect_metrics()
+
+xgb_l_res %>%
+  collect_metrics() %>%
+  mutate(tree_depth = factor(tree_depth)) %>%
+  ggplot(aes(trees, mean, color = tree_depth)) +
+#  geom_line(size = 1.5, alpha = 0.6) +
+  geom_point(size = 2) +
+  facet_wrap(~ .metric, scales = "free", nrow = 2) +
+  scale_x_log10(labels = scales::label_number()) +
+  scale_color_viridis_d(option = "plasma", begin = .9, end = 0) +
+  facet_wrap(~mtry)
+
+xgb_l_res %>%
+  show_best("accuracy")
+
+best_boost <- xgb_l_res %>%
+  select_best("accuracy")
+
+final_wf <- 
+  xgb_wf %>% 
+  finalize_workflow(best_boost)
+final_wf
+
+final_fit <- 
+  final_wf %>%
+  last_fit(qsar_split) 
+
+final_fit$.metrics
+
+xgb_fit %>% extract_fit_parsnip()
+#predict(final_fit, qsar_test)
+
+final_fit$.predictions
+
+final_fit$.predictions[[1]] %>% 
+  accuracy(truth= as.factor(class), .pred_class) 
+
+caret::confusionMatrix(
+  final_fit$.predictions[[1]]$.pred_class, final_fit$.predictions[[1]]$class )
+
+```
+
+
