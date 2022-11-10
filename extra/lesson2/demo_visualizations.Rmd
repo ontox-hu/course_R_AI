@@ -438,6 +438,8 @@ Without looking ahead try to contruct a plot that conveys information on the `gd
 
 
 ```{r}
+years <- c("1960", "1970", "1980", "1990", "2000", "2010")
+
 facets_gdp_infant <- gapminder %>%
   dplyr::filter(continent == "Europe" | continent == "Africa",
                 year == "1960" | year == "2010") %>%
@@ -570,6 +572,7 @@ gapminder %>%
 ## Grouping
 We can see what happened if we plot individual datapoints
 ```{r}
+
 gapminder %>% 
   dplyr::filter(continent == "Americas" | continent == "Oceania") %>%
   ggplot(aes(x = year,
@@ -618,6 +621,9 @@ Sometimes you have overlapping plots and adding transparency with `alpha()` or m
 
 Let's look at an example
 ```{r}
+years <- c("1960", "1970", "1980", "1990", "2000", "2010")
+
+
 gapminder %>% 
   dplyr::filter(continent == "Americas" |
                 continent == "Africa") %>%
@@ -639,7 +645,7 @@ gapminder %>%
     group_by(continent) %>%
   ggplot(aes(x = year,
              y = infant_mortality)) +
-  geom_point(aes(colour = continent), position = "jitter") 
+  geom_point(aes(colour = country), position = "jitter", show.legend = FALSE) 
   
 ```
  
